@@ -23,7 +23,8 @@ class CitySearchShould {
 
     @Before
    fun setup(){
-        val fetchCitiesUseCase = FetchCitiesUseCase()
+        val citiesRepository = CitiesRepository()
+        val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository)
         val viewModel = CitiesViewModel(fetchCitiesUseCase)
         uiController = CitySearchSpyUiController().apply { this.viewModel = viewModel }
         uiController.onCreate()

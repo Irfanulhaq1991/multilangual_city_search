@@ -8,7 +8,7 @@ class CitiesViewModel(private val fetchCitiesUseCase: FetchCitiesUseCase) {
     val citiesLiveData: LiveData<String> = _citiesLiveData
 
     fun fetchCities() {
-       fetchCitiesUseCase.fetchCities()
+       fetchCitiesUseCase()
     }
 
 }

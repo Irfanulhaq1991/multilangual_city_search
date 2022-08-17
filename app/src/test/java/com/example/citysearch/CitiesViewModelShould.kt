@@ -33,7 +33,7 @@ class CitiesViewModelShould:BaseTest(){
     @Test
     fun fetchCities(){
         viewModel.fetchCities()
-        verify { fetchCitiesUseCase.fetchCities() }
+        verify { fetchCitiesUseCase() }
     }
 
 }
