@@ -23,7 +23,8 @@ class CitySearchShould {
 
     @Before
    fun setup(){
-        val viewModel = CitySearchViewModel()
+        val fetchCitiesUseCase = FetchCitiesUseCase()
+        val viewModel = CitiesViewModel(fetchCitiesUseCase)
         uiController = CitySearchSpyUiController().apply { this.viewModel = viewModel }
         uiController.onCreate()
 
@@ -41,7 +42,7 @@ class CitySearchShould {
 
 class CitySearchSpyUiController:LifecycleOwner {
 
-    lateinit var viewModel: CitySearchViewModel
+    lateinit var viewModel: CitiesViewModel
     val uiStates = mutableListOf<String>() // No idea of the exact type of the states at the moment
     private val countDownLatch: CountDownLatch = CountDownLatch(1)
 
