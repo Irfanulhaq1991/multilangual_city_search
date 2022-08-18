@@ -9,7 +9,7 @@ import org.junit.Test
 import java.io.IOException
 
 class CitiesRepositoryShould : BaseTest(){
-   // At the moment, No idea of the complete logic and design of the citiesRepository
+
     @MockK
    private lateinit var remoteDataSource : RemoteDataSource
    private lateinit var citiesRepository : CitiesRepository
@@ -21,16 +21,16 @@ class CitiesRepositoryShould : BaseTest(){
     }
     @Test
     fun returnNoCity(){
-        every { remoteDataSource.fetchCities() } answers { emptyList()}
         val expected = Result.success(emptyList<String>())
+        every { remoteDataSource.fetchCities() } answers { expected}
         val result =  citiesRepository.fetchCities()
         Truth.assertThat(result).isEqualTo(expected)
     }
 
     @Test
     fun returnOneCity(){
-        every { remoteDataSource.fetchCities() } answers { listOf("London") }
         val expected = Result.success(listOf("London"))
+        every { remoteDataSource.fetchCities() } answers { expected }
         val result =  citiesRepository.fetchCities()
         Truth.assertThat(result).isEqualTo(expected)
     }
@@ -38,19 +38,18 @@ class CitiesRepositoryShould : BaseTest(){
 
     @Test
     fun returnManyCities(){
-        every { remoteDataSource.fetchCities() } answers { listOf("London","Yorkshire") }
         val expected = Result.success(listOf("London","Yorkshire"))
+        every { remoteDataSource.fetchCities() } answers { expected}
         val result =  citiesRepository.fetchCities()
         Truth.assertThat(result).isEqualTo(expected)
     }
 
     @Test
     fun returnError(){
-        every { remoteDataSource.fetchCities() } throws IOException("No internet")
+        val expected = "No internet"
+        every { remoteDataSource.fetchCities() } answers { Result.failure(Throwable(expected)) }
         val citiesRepository = CitiesRepository(remoteDataSource)
         val result =  citiesRepository.fetchCities()
         Truth.assertThat(isFailureWithMessage(result,"No internet")).isTrue()
     }
-
-
 }
