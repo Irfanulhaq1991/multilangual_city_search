@@ -8,7 +8,7 @@ import org.junit.Test
 import retrofit2.Response
 
 class RemoteDataSourceShould : BaseTest() {
-    
+
     @Before
     override fun setUp() {
         super.setUp()
@@ -25,7 +25,7 @@ class RemoteDataSourceShould : BaseTest() {
     }
 
     @Test
-    fun fetchOneOrManyCities(){
+    fun fetchOneCities(){
         val remoteDataSource = RemoteDataSource(object : ICitiesRemoteApi{
             override fun fetchCities(): Response<List<CityDto>> {
                return Response.success(listOf(DummyDataProvider.provideDTOS()[0]))
@@ -33,10 +33,17 @@ class RemoteDataSourceShould : BaseTest() {
         })
 
 
-        Truth.assertThat(remoteDataSource.fetchCities()).isEqualTo(Result.success(emptyList<CityDto>()))
+        Truth.assertThat(remoteDataSource.fetchCities()).isEqualTo(Result.success(listOf(DummyDataProvider.provideDTOS()[0])))
     }
 
+    @Test
+    fun fetchManyCities(){
+        val remoteDataSource = RemoteDataSource(object : ICitiesRemoteApi{
+            override fun fetchCities(): Response<List<CityDto>> {
+                return Response.success(DummyDataProvider.provideDTOS())
+            }
+        })
 
-
-
+        Truth.assertThat(remoteDataSource.fetchCities()).isEqualTo(Result.success(DummyDataProvider.provideDTOS()))
+    }
 }

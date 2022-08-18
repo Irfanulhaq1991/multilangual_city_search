@@ -5,6 +5,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import com.example.citysearch.data.CitiesRepository
+import com.example.citysearch.data.CityDto
+import com.example.citysearch.data.ICitiesRemoteApi
 import com.example.citysearch.data.RemoteDataSource
 import com.example.citysearch.domain.FetchCitiesUseCase
 import com.example.citysearch.domain.ICityMapper
@@ -13,6 +15,7 @@ import com.google.common.truth.Truth
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import retrofit2.Response
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -29,6 +32,12 @@ class CitySearchShould {
     @Before
    fun setup(){
 
+        val fakeCitiesRemoteApi = object : ICitiesRemoteApi{
+            override fun fetchCities(): Response<List<CityDto>> {
+                TODO("Not yet implemented")
+            }
+
+        }
         val remoteDataSource = RemoteDataSource(fakeCitiesRemoteApi)
         val mapper = ICityMapper()
         val citiesRepository = CitiesRepository(remoteDataSource,mapper)
