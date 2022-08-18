@@ -2,15 +2,15 @@ package com.example.citysearch
 
 import com.example.citysearch.data.CitiesRepository
 import com.example.citysearch.data.CityDto
-import com.example.citysearch.data.CoordinatesDto
 import com.example.citysearch.data.RemoteDataSource
+import com.example.citysearch.domain.ICityMapper
 import com.google.common.truth.Truth
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import org.junit.Before
 import org.junit.Test
 
-class CitiesRepositoryShould : BaseTest() {
+class CitiesRepositoryShould : BaseTest()  {
 
     @MockK
     private lateinit var remoteDataSource: RemoteDataSource
@@ -19,7 +19,8 @@ class CitiesRepositoryShould : BaseTest() {
     @Before
     override fun setUp() {
         super.setUp()
-        citiesRepository = CitiesRepository(remoteDataSource)
+        val mapper = ICityMapper()
+        citiesRepository = CitiesRepository(remoteDataSource,mapper)
     }
 
     @Test
@@ -32,8 +33,8 @@ class CitiesRepositoryShould : BaseTest() {
 
     @Test
     fun returnOneCity() {
-        every { remoteDataSource.fetchCities() } answers { Result.success(listOf(provideDTOS()[1])) }
-        val expected = Result.success(listOf(provideDomainModels()[1]))
+        every { remoteDataSource.fetchCities() } answers { Result.success(listOf(DummyDataProvider.provideDTOS()[1])) }
+        val expected = Result.success(listOf(DummyDataProvider.provideDomainModels()[1]))
         val result = citiesRepository.fetchCities()
         Truth.assertThat(result).isEqualTo(expected)
     }
@@ -42,8 +43,8 @@ class CitiesRepositoryShould : BaseTest() {
     @Test
     fun returnManyCities() {
 
-        every { remoteDataSource.fetchCities() } answers { Result.success(provideDTOS()) }
-        val expected = Result.success(provideDomainModels())
+        every { remoteDataSource.fetchCities() } answers { Result.success(DummyDataProvider.provideDTOS()) }
+        val expected = Result.success(DummyDataProvider.provideDomainModels())
         val result = citiesRepository.fetchCities()
         Truth.assertThat(result).isEqualTo(expected)
     }
@@ -52,43 +53,10 @@ class CitiesRepositoryShould : BaseTest() {
     fun returnError() {
         val expected = "No internet"
         every { remoteDataSource.fetchCities() } answers { Result.failure(Throwable(expected)) }
-        val citiesRepository = CitiesRepository(remoteDataSource)
         val result = citiesRepository.fetchCities()
-        Truth.assertThat(isFailureWithMessage(result, "No internet")).isTrue()
+        Truth.assertThat(isFailureWithMessage(result, expected)).isTrue()
     }
 
-
-
-
-
-    
-    private fun provideDTOS(): List<CityDto> {
-        return listOf(
-
-            CityDto(
-                "UK", "London", 12345,
-                CoordinatesDto(1.0, 1.0)
-            ),
-            CityDto(
-                "UK", "Yorkshire", 123456,
-                CoordinatesDto(2.0, 2.0)
-            ),
-
-            )
-    }
-
-    fun provideDomainModels(): List<City> {
-        return listOf(
-            City(12345,"London","UK",
-                Coordinates(1.0, 1.0)
-            ),
-            City(
-                123456,"Yorkshire","UK",
-                Coordinates(2.0, 2.0)
-            ),
-
-            )
-    }
 }
 
 

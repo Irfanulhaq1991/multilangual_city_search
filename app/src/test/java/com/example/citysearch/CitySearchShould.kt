@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleRegistry
 import com.example.citysearch.data.CitiesRepository
 import com.example.citysearch.data.RemoteDataSource
 import com.example.citysearch.domain.FetchCitiesUseCase
+import com.example.citysearch.domain.ICityMapper
 import com.example.citysearch.view.CitiesViewModel
 import com.google.common.truth.Truth
 import org.junit.Before
@@ -29,7 +30,8 @@ class CitySearchShould {
    fun setup(){
 
         val remoteDataSource = RemoteDataSource()
-        val citiesRepository = CitiesRepository(remoteDataSource)
+        val mapper = ICityMapper()
+        val citiesRepository = CitiesRepository(remoteDataSource,mapper)
         val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository)
         val viewModel = CitiesViewModel(fetchCitiesUseCase)
         uiController = CitySearchSpyUiController().apply { this.viewModel = viewModel }

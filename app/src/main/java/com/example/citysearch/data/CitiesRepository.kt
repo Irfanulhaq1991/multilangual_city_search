@@ -1,16 +1,14 @@
 package com.example.citysearch.data
 
 import com.example.citysearch.City
-import com.example.citysearch.Coordinates
+import com.example.citysearch.domain.IMapper
 
-class CitiesRepository(private val remoteDataSource: RemoteDataSource) {
-
-
+class CitiesRepository(
+    private val remoteDataSource: RemoteDataSource,
+    private val mapper: IMapper<List<CityDto>,List<City>>
+) {
     fun fetchCities(): Result<List<City>>{
-            return remoteDataSource.fetchCities().map { map(it) }
-    }
-
-    private fun map(cities: List<CityDto>):List<City>{
-        return cities.map { City(it._id,it.name,it.country,Coordinates(it.coordinates.lon,it.coordinates.lat)) }
+            return remoteDataSource.fetchCities().map { mapper.map(it) }
     }
 }
+
