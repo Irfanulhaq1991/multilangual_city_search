@@ -2,8 +2,10 @@ package com.example.citysearch.domain
 
 import com.example.citysearch.BaseTest
 import com.example.citysearch.data.CitiesRepository
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verifyAll
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
@@ -21,9 +23,9 @@ class FetchCitiesUseCaseShould : BaseTest() {
     }
 
     @Test
-    fun fetchCities() {
+    fun fetchCities() = runTest {
         fetchCitiesUseCase()
-        verifyAll { citiesRepository.fetchCities() }
+        coVerify { citiesRepository.fetchCities() }
 
     }
 

@@ -3,6 +3,7 @@ package com.example.citysearch.data
 import com.example.citysearch.BaseTest
 import com.example.citysearch.DummyDataProvider
 import com.google.common.truth.Truth
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import retrofit2.Response
 import java.io.IOException
@@ -11,7 +12,7 @@ import java.io.IOException
 // Contract test to verify the logics of the ICitiesDataSource subclasses e.g databaseDataSource, RemoteDataSource, CacheDataSource and etc.
 abstract class ICitiesDataSourceContactTests : BaseTest() {
     @Test
-    fun fetchNoCity() {
+    fun fetchNoCity() = runTest {
         val remoteDataSource = withNoData()
         val expected = Result.success(emptyList<CityDto>())
 
@@ -22,7 +23,7 @@ abstract class ICitiesDataSourceContactTests : BaseTest() {
     }
 
     @Test
-    fun fetchOneCities() {
+    fun fetchOneCities() = runTest {
         val remoteDataSource = withData(listOf(DummyDataProvider.provideDTOS()[0]))
         val expected = listOf(DummyDataProvider.provideDTOS()[0])
 
@@ -33,7 +34,7 @@ abstract class ICitiesDataSourceContactTests : BaseTest() {
     }
 
     @Test
-    fun fetchManyCities() {
+    fun fetchManyCities() = runTest {
         val remoteDataSource = withData(DummyDataProvider.provideDTOS())
         val expected = Result.success(DummyDataProvider.provideDTOS())
 
@@ -44,7 +45,7 @@ abstract class ICitiesDataSourceContactTests : BaseTest() {
     }
 
     @Test
-    fun returnInternetError() {
+    fun returnInternetError() = runTest {
         val remoteDataSource = withException(IOException())
         val expect = "No internet"
 
@@ -54,7 +55,7 @@ abstract class ICitiesDataSourceContactTests : BaseTest() {
     }
 
 
-    abstract fun withException(e:Exception): ICitiesDataSource
+    abstract fun withException(e: Exception): ICitiesDataSource
 
     abstract fun withNoData(): ICitiesDataSource
 

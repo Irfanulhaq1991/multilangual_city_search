@@ -4,8 +4,10 @@ import com.example.citysearch.BaseTest
 import com.example.citysearch.DummyDataProvider
 import com.example.citysearch.domain.ICityMapper
 import com.google.common.truth.Truth
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
@@ -24,16 +26,16 @@ class CitiesRepositoryShould : BaseTest()  {
     }
 
     @Test
-    fun returnNoCity() {
+    fun returnNoCity() = runTest {
         val expected = Result.success(emptyList<CityDto>())
-        every { remoteDataSource.fetchCities() } answers { expected }
+        coEvery {  remoteDataSource.fetchCities() } answers { expected }
         val result = citiesRepository.fetchCities()
         Truth.assertThat(result).isEqualTo(expected)
     }
 
     @Test
-    fun returnOneCity() {
-        every { remoteDataSource.fetchCities() } answers { Result.success(listOf(DummyDataProvider.provideDTOS()[1])) }
+    fun returnOneCity() = runTest {
+        coEvery { remoteDataSource.fetchCities() } answers { Result.success(listOf(DummyDataProvider.provideDTOS()[1])) }
         val expected = Result.success(listOf(DummyDataProvider.provideDomainModels()[1]))
         val result = citiesRepository.fetchCities()
         Truth.assertThat(result).isEqualTo(expected)
@@ -41,18 +43,18 @@ class CitiesRepositoryShould : BaseTest()  {
 
 
     @Test
-    fun returnManyCities() {
+    fun returnManyCities() = runTest{
 
-        every { remoteDataSource.fetchCities() } answers { Result.success(DummyDataProvider.provideDTOS()) }
+        coEvery {  remoteDataSource.fetchCities() } answers { Result.success(DummyDataProvider.provideDTOS()) }
         val expected = Result.success(DummyDataProvider.provideDomainModels())
         val result = citiesRepository.fetchCities()
         Truth.assertThat(result).isEqualTo(expected)
     }
 
     @Test
-    fun returnError() {
+    fun returnError() = runTest{
         val expected = "No internet"
-        every { remoteDataSource.fetchCities() } answers { Result.failure(Throwable(expected)) }
+        coEvery {  remoteDataSource.fetchCities() } answers { Result.failure(Throwable(expected)) }
         val result = citiesRepository.fetchCities()
         Truth.assertThat(isFailureWithMessage(result, expected)).isTrue()
     }

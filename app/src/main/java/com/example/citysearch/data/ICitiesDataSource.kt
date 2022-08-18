@@ -1,5 +1,5 @@
 package com.example.citysearch.data
 
 interface ICitiesDataSource {
-    fun fetchCities(): Result<List<CityDto>>
+   suspend fun fetchCities(): Result<List<CityDto>>
 }

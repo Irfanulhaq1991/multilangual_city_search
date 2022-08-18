@@ -6,6 +6,6 @@ import retrofit2.http.GET
 interface ICitiesRemoteApi {
 
     @GET("/")
-    fun fetchCities(): Response<List<CityDto>>
+   suspend fun fetchCities(): Response<List<CityDto>>
 
 }

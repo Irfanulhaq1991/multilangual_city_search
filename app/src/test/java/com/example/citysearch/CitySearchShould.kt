@@ -34,7 +34,7 @@ class CitySearchShould {
    fun setup(){
 
         val fakeCitiesRemoteApi = object : ICitiesRemoteApi{
-            override fun fetchCities() = Response.success(DummyDataProvider.provideDTOS())
+            override suspend fun fetchCities() = Response.success(DummyDataProvider.provideDTOS())
         }
 
         val remoteDataSource = RemoteDataSource(fakeCitiesRemoteApi)
