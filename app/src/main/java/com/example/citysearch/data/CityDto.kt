@@ -6,7 +6,7 @@ data class CityDto(
     val country: String,
     val name: String,
     val _id: Int,
-    val coordinates: CoordinatesDto
+    val coord: CoordinatesDto
 )
 
 data class CoordinatesDto(

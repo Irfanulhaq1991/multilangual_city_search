@@ -1,11 +1,10 @@
 package com.example.citysearch.data
 
 import com.example.citysearch.BaseTest
-import com.example.citysearch.DummyDataProvider
+import com.example.citysearch.TestDataProvider
 import com.google.common.truth.Truth
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import retrofit2.Response
 import java.io.IOException
 
 
@@ -24,8 +23,8 @@ abstract class ICitiesDataSourceContactTests : BaseTest() {
 
     @Test
     fun fetchOneCities() = runTest {
-        val remoteDataSource = withData(listOf(DummyDataProvider.provideDTOS()[0]))
-        val expected = listOf(DummyDataProvider.provideDTOS()[0])
+        val remoteDataSource = withData(listOf(TestDataProvider.provideDTOS()[0]))
+        val expected = listOf(TestDataProvider.provideDTOS()[0])
 
         val actual = remoteDataSource.fetchCities()
 
@@ -35,8 +34,8 @@ abstract class ICitiesDataSourceContactTests : BaseTest() {
 
     @Test
     fun fetchManyCities() = runTest {
-        val remoteDataSource = withData(DummyDataProvider.provideDTOS())
-        val expected = Result.success(DummyDataProvider.provideDTOS())
+        val remoteDataSource = withData(TestDataProvider.provideDTOS())
+        val expected = Result.success(TestDataProvider.provideDTOS())
 
         val actual = remoteDataSource.fetchCities()
 

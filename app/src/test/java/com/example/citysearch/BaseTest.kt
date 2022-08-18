@@ -1,6 +1,8 @@
 package com.example.citysearch
 
+import com.google.common.truth.Truth
 import io.mockk.MockKAnnotations
+import org.junit.Test
 
 open class BaseTest {
 
@@ -12,5 +14,12 @@ open class BaseTest {
         var errorMessage: String? = "#-#"
         result.onFailure { errorMessage = it.message }
         return result.isFailure && errorMessage == message
+    }
+
+
+    @Test
+    fun  testfile(){
+        val data2 = TestDataProvider.provideDomainModels(true)
+        Truth.assertThat(data2.size).isEqualTo( 209557)
     }
 }
