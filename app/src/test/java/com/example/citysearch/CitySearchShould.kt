@@ -4,6 +4,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import com.example.citysearch.data.CitiesRepository
+import com.example.citysearch.data.RemoteDataSource
+import com.example.citysearch.domain.FetchCitiesUseCase
+import com.example.citysearch.view.CitiesViewModel
 import com.google.common.truth.Truth
 import org.junit.Before
 import org.junit.Rule

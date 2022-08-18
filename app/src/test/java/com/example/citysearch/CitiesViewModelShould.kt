@@ -1,8 +1,9 @@
 package com.example.citysearch
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.example.citysearch.domain.FetchCitiesUseCase
+import com.example.citysearch.view.CitiesViewModel
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.TestCase
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

@@ -1,4 +1,4 @@
-package com.example.citysearch
+package com.example.citysearch.data
 
 class RemoteDataSource {
 

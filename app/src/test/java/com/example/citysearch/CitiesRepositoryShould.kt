@@ -1,12 +1,12 @@
 package com.example.citysearch
 
+import com.example.citysearch.data.CitiesRepository
+import com.example.citysearch.data.RemoteDataSource
 import com.google.common.truth.Truth
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Test
-import java.io.IOException
 
 class CitiesRepositoryShould : BaseTest(){
 
@@ -29,8 +29,8 @@ class CitiesRepositoryShould : BaseTest(){
 
     @Test
     fun returnOneCity(){
-        val expected = Result.success(listOf("London"))
-        every { remoteDataSource.fetchCities() } answers { expected }
+        every { remoteDataSource.fetchCities() } answers { Result.success(listOf("London"))}
+        val expected = Result.success(listOf(City(0,"London","Uk", Coordinates(1.0,1.0))))
         val result =  citiesRepository.fetchCities()
         Truth.assertThat(result).isEqualTo(expected)
     }
@@ -38,8 +38,11 @@ class CitiesRepositoryShould : BaseTest(){
 
     @Test
     fun returnManyCities(){
-        val expected = Result.success(listOf("London","Yorkshire"))
-        every { remoteDataSource.fetchCities() } answers { expected}
+
+        every { remoteDataSource.fetchCities() } answers { Result.success(listOf("London","Yorkshire"))}
+        val expected = Result.success(listOf(City(0,"London","Uk", Coordinates(1.0,1.0)),
+            City(1,"Yorkshire","Uk", Coordinates(2.0,2.0))),
+        )
         val result =  citiesRepository.fetchCities()
         Truth.assertThat(result).isEqualTo(expected)
     }
@@ -53,3 +56,5 @@ class CitiesRepositoryShould : BaseTest(){
         Truth.assertThat(isFailureWithMessage(result,"No internet")).isTrue()
     }
 }
+
+

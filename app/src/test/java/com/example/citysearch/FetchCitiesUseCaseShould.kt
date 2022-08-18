@@ -1,5 +1,7 @@
 package com.example.citysearch
 
+import com.example.citysearch.data.CitiesRepository
+import com.example.citysearch.domain.FetchCitiesUseCase
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verifyAll
 import org.junit.Before

@@ -1,4 +1,6 @@
-package com.example.citysearch
+package com.example.citysearch.domain
+
+import com.example.citysearch.data.CitiesRepository
 
 class FetchCitiesUseCase(private val citiesRepository: CitiesRepository) {
 
