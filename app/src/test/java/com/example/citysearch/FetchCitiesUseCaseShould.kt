@@ -1,7 +1,7 @@
-package com.example.citysearch
+package com.example.citysearch.domain
 
+import com.example.citysearch.BaseTest
 import com.example.citysearch.data.CitiesRepository
-import com.example.citysearch.domain.FetchCitiesUseCase
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verifyAll
 import org.junit.Before

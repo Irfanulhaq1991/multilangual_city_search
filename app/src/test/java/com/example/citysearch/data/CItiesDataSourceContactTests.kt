@@ -7,7 +7,9 @@ import org.junit.Test
 import retrofit2.Response
 import java.io.IOException
 
-abstract class CItiesDataSourceContactTests : BaseTest() {
+
+// Contract test to verify the logics of the ICitiesDataSource subclasses e.g databaseDataSource, RemoteDataSource, CacheDataSource and etc.
+abstract class ICitiesDataSourceContactTests : BaseTest() {
     @Test
     fun fetchNoCity() {
         val remoteDataSource = withNoData()

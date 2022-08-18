@@ -1,8 +1,11 @@
-package com.example.citysearch
+package com.example.citysearch.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.example.citysearch.BaseTest
+import com.example.citysearch.CoroutineTestRule
+import com.example.citysearch.DummyDataProvider
 import com.example.citysearch.domain.FetchCitiesUseCase
-import com.example.citysearch.view.CitiesViewModel
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import org.junit.Before
@@ -11,7 +14,7 @@ import org.junit.Test
 
 
 
-class CitiesViewModelShould:BaseTest(){
+class CitiesViewModelShould: BaseTest(){
 
     @get:Rule
     val liveDataRule = InstantTaskExecutorRule()
@@ -32,8 +35,10 @@ class CitiesViewModelShould:BaseTest(){
 
     @Test
     fun fetchCities(){
+        every { fetchCitiesUseCase() } answers { Result.success(DummyDataProvider.provideDomainModels()) }
+
         viewModel.fetchCities()
-        verify { fetchCitiesUseCase() }
+        verify { fetchCitiesUseCase()}
     }
 
 }

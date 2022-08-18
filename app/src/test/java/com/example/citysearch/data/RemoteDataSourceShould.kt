@@ -1,28 +1,20 @@
 package com.example.citysearch.data
 
-import com.example.citysearch.BaseTest
-import com.example.citysearch.DummyDataProvider
 import com.google.common.truth.Truth
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Test
 import retrofit2.Response
-import java.io.IOException
 
-class RemoteDataSourceShould : CItiesDataSourceContactTests() {
 
+class RemoteDataSourceShould : ICitiesDataSourceContactTests() {
 
     @Test
     fun returnCouldProcessRequestError(){
         val remoteDataSource = withUnSuccessful(404,"Not found")
-        val expect = "Could not process your Request"
+        val expect = "Could not process your request"
         val actual = remoteDataSource.fetchCities()
         Truth.assertThat(isFailureWithMessage(actual,expect)).isTrue()
     }
-
 
      override fun withNoData() = RemoteDataSource(object : ICitiesRemoteApi {
         override fun fetchCities(): Response<List<CityDto>> {
@@ -49,7 +41,6 @@ class RemoteDataSourceShould : CItiesDataSourceContactTests() {
             override fun fetchCities(): Response<List<CityDto>> {
                 throw e
             }
-
         }
     )
 

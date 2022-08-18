@@ -1,14 +1,14 @@
-package com.example.citysearch
+package com.example.citysearch.data
 
-import com.example.citysearch.data.CitiesRepository
-import com.example.citysearch.data.CityDto
-import com.example.citysearch.data.RemoteDataSource
+import com.example.citysearch.BaseTest
+import com.example.citysearch.DummyDataProvider
 import com.example.citysearch.domain.ICityMapper
 import com.google.common.truth.Truth
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import org.junit.Before
 import org.junit.Test
+
 
 class CitiesRepositoryShould : BaseTest()  {
 

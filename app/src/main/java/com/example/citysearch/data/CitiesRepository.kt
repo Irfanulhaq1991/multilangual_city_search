@@ -8,7 +8,8 @@ class CitiesRepository(
     private val mapper: IMapper<List<CityDto>,List<City>>
 ) {
     fun fetchCities(): Result<List<City>>{
-            return remoteDataSource.fetchCities().map { mapper.map(it) }
+            return remoteDataSource.fetchCities()
+                .map { mapper.map(it) }
     }
 }
 

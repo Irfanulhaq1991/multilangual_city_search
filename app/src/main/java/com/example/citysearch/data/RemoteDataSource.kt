@@ -6,7 +6,13 @@ class RemoteDataSource(private val api: ICitiesRemoteApi):ICitiesDataSource {
 
    override fun fetchCities(): Result<List<CityDto>> {
        return try {
-           Result.success(api.fetchCities().body()!!)
+           val response= api.fetchCities()
+           if(response.isSuccessful){
+               Result.success(response.body()!!)
+           }else{
+               Result.failure(Throwable("Could not process your request"))
+           }
+
        } catch (e: IOException) {
            Result.failure(Throwable("No internet"))
        }

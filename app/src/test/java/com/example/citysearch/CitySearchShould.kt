@@ -10,6 +10,7 @@ import com.example.citysearch.data.ICitiesRemoteApi
 import com.example.citysearch.data.RemoteDataSource
 import com.example.citysearch.domain.FetchCitiesUseCase
 import com.example.citysearch.domain.ICityMapper
+import com.example.citysearch.view.CitiesUIState
 import com.example.citysearch.view.CitiesViewModel
 import com.google.common.truth.Truth
 import org.junit.Before
@@ -33,11 +34,9 @@ class CitySearchShould {
    fun setup(){
 
         val fakeCitiesRemoteApi = object : ICitiesRemoteApi{
-            override fun fetchCities(): Response<List<CityDto>> {
-                TODO("Not yet implemented")
-            }
-
+            override fun fetchCities() = Response.success(DummyDataProvider.provideDTOS())
         }
+
         val remoteDataSource = RemoteDataSource(fakeCitiesRemoteApi)
         val mapper = ICityMapper()
         val citiesRepository = CitiesRepository(remoteDataSource,mapper)
@@ -51,7 +50,9 @@ class CitySearchShould {
 
     @Test
     fun fetchCities(){
-        val expected = listOf("loading","Success","HideLoading")
+        val expected = listOf(CitiesUIState(),CitiesUIState(loading = true),
+            CitiesUIState(loading = false,cities = DummyDataProvider.provideDomainModels())
+        )
         uiController.fetchCities()
         val actual = uiController.uiStates
         Truth.assertThat(actual).isEqualTo(expected)
@@ -61,7 +62,7 @@ class CitySearchShould {
 class CitySearchSpyUiController:LifecycleOwner {
 
     lateinit var viewModel: CitiesViewModel
-    val uiStates = mutableListOf<String>() // No idea of the exact type of the states at the moment
+    val uiStates = mutableListOf<CitiesUIState>() // Ui State list
     private val countDownLatch: CountDownLatch = CountDownLatch(1)
 
 
