@@ -10,7 +10,7 @@ class CitiesRepository(private val remoteDataSource: RemoteDataSource) {
             return remoteDataSource.fetchCities().map { map(it) }
     }
 
-    private fun map(cities:List<String>):List<City>{
-        return cities.map { City(0,it,"Uk", Coordinates(1.0,1.0)) }
+    private fun map(cities: List<CityDto>):List<City>{
+        return cities.map { City(it._id,it.name,it.country,Coordinates(it.coordinates.lon,it.coordinates.lat)) }
     }
 }
