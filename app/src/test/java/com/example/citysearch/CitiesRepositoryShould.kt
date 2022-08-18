@@ -39,4 +39,14 @@ class CitiesRepositoryShould : BaseTest(){
         Truth.assertThat(citiesRepository.fetchCities()).isEqualTo(listOf("London","Yorkshire"))
     }
 
+
+
+    @Test
+    fun returnError(){
+        every { remoteDataSource.fetchCities() } throws IOException("No internet")
+        val citiesRepository = CitiesRepository(remoteDataSource)
+        Truth.assertThat(isFailureWithMessage(citiesRepository.fetchCities(),"No internet")).isTrue()
+    }
+
+
 }
