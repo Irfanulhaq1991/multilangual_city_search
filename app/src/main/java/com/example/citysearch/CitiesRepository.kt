@@ -1,9 +1,9 @@
 package com.example.citysearch
 
-class CitiesRepository {
+class CitiesRepository(private val remoteDataSource: RemoteDataSource) {
 
 
     fun fetchCities():List<String> {
-        return emptyList()
+        return remoteDataSource.fetchCities()
     }
 }
