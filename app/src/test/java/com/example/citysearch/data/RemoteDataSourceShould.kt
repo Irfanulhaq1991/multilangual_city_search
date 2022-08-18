@@ -3,47 +3,61 @@ package com.example.citysearch.data
 import com.example.citysearch.BaseTest
 import com.example.citysearch.DummyDataProvider
 import com.google.common.truth.Truth
-import org.junit.Before
 import org.junit.Test
 import retrofit2.Response
+import java.io.IOException
 
-class RemoteDataSourceShould : BaseTest() {
+class RemoteDataSourceShould:BaseTest(){
 
-    @Before
-    override fun setUp() {
-        super.setUp()
-    }
 
     @Test
     fun fetchNoCity() {
-        val remoteDataSource = RemoteDataSource(object : ICitiesRemoteApi{
-            override fun fetchCities(): Response<List<CityDto>> {
-                return Response.success(emptyList())
-            }
-        })
+        val remoteDataSource = withNoData()
         Truth.assertThat(remoteDataSource.fetchCities()).isEqualTo(Result.success(emptyList<CityDto>()))
     }
 
+
+
     @Test
     fun fetchOneCities(){
-        val remoteDataSource = RemoteDataSource(object : ICitiesRemoteApi{
-            override fun fetchCities(): Response<List<CityDto>> {
-               return Response.success(listOf(DummyDataProvider.provideDTOS()[0]))
-            }
-        })
-
-
+        val remoteDataSource = withData(listOf(DummyDataProvider.provideDTOS()[0]))
         Truth.assertThat(remoteDataSource.fetchCities()).isEqualTo(Result.success(listOf(DummyDataProvider.provideDTOS()[0])))
     }
 
     @Test
     fun fetchManyCities(){
-        val remoteDataSource = RemoteDataSource(object : ICitiesRemoteApi{
-            override fun fetchCities(): Response<List<CityDto>> {
-                return Response.success(DummyDataProvider.provideDTOS())
-            }
-        })
+        val remoteDataSource = withData(DummyDataProvider.provideDTOS())
 
         Truth.assertThat(remoteDataSource.fetchCities()).isEqualTo(Result.success(DummyDataProvider.provideDTOS()))
     }
+
+    @Test
+    fun returnInternetError(){
+        Truth.assertThat(isFailureWithMessage(RemoteDataSource(
+            object :ICitiesRemoteApi{
+                override fun fetchCities(): Response<List<CityDto>> {
+                    throw IOException()
+                }
+
+            }
+
+
+
+        ).fetchCities(),"No internet")).isTrue()
+    }
+
+
+    private fun withNoData() = RemoteDataSource(object : ICitiesRemoteApi {
+        override fun fetchCities(): Response<List<CityDto>> {
+            return Response.success(emptyList())
+        }
+    })
+
+
+    private fun withData(cities: List<CityDto>) = RemoteDataSource(object : ICitiesRemoteApi {
+        override fun fetchCities(): Response<List<CityDto>> {
+            return Response.success(cities)
+        }
+    })
+
 }

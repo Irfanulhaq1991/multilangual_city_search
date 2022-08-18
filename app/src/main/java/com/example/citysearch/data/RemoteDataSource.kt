@@ -1,9 +1,16 @@
 package com.example.citysearch.data
 
-class RemoteDataSource(private val api : ICitiesRemoteApi) {
+import java.io.IOException
+
+class RemoteDataSource(private val api: ICitiesRemoteApi) {
 
     fun fetchCities(): Result<List<CityDto>> {
-       return Result.success(api.fetchCities().body()!!)
+        try {
+            return Result.success(api.fetchCities().body()!!)
+        } catch (e: IOException) {
+            return Result.failure(Throwable("No internet"))
+        }
+
     }
 
 }
