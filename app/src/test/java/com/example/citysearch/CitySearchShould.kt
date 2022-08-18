@@ -29,7 +29,7 @@ class CitySearchShould {
     @Before
    fun setup(){
 
-        val remoteDataSource = RemoteDataSource()
+        val remoteDataSource = RemoteDataSource(fakeCitiesRemoteApi)
         val mapper = ICityMapper()
         val citiesRepository = CitiesRepository(remoteDataSource,mapper)
         val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository)
