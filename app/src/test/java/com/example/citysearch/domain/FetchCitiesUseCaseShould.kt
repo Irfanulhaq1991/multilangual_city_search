@@ -52,4 +52,7 @@ class FetchCitiesUseCaseShould : BaseTest() {
             .isEqualTo(expected)
     }
 
+
+
+
 }

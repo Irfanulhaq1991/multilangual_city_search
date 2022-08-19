@@ -28,15 +28,20 @@ class CitiesRepositoryShould : BaseTest()  {
     fun returnNoCity() = runTest {
         val expected = Result.success(emptyList<CityDto>())
         coEvery {  remoteDataSource.fetchCities() } answers { expected }
+
         val result = citiesRepository.fetchCities()
+
         Truth.assertThat(result).isEqualTo(expected)
     }
 
     @Test
     fun returnOneCity() = runTest {
-        coEvery { remoteDataSource.fetchCities() } answers { Result.success(listOf(TestDataProvider.provideDTOS()[1])) }
-        val expected = Result.success(listOf(TestDataProvider.provideDomainModels()[1]))
+        val data = TestDataProvider.sort(TestDataProvider.provideDomainModels().subList(0,0))
+        val expected = Result.success(data)
+        coEvery { remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS().subList(0,0)) }
+
         val result = citiesRepository.fetchCities()
+
         Truth.assertThat(result).isEqualTo(expected)
     }
 
@@ -45,8 +50,10 @@ class CitiesRepositoryShould : BaseTest()  {
     fun returnManyCities() = runTest{
 
         coEvery {  remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
-        val expected = Result.success(TestDataProvider.provideDomainModels())
+        val expected = Result.success(TestDataProvider.sort(TestDataProvider.provideDomainModels()))
+
         val result = citiesRepository.fetchCities()
+
         Truth.assertThat(result).isEqualTo(expected)
     }
 
@@ -54,7 +61,9 @@ class CitiesRepositoryShould : BaseTest()  {
     fun returnError() = runTest{
         val expected = "No internet"
         coEvery {  remoteDataSource.fetchCities() } answers { Result.failure(Throwable(expected)) }
+
         val result = citiesRepository.fetchCities()
+
         Truth.assertThat(isFailureWithMessage(result, expected)).isTrue()
     }
 
