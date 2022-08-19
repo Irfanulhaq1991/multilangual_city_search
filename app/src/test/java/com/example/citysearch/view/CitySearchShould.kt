@@ -5,6 +5,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import com.example.citysearch.data.CitiesRepository
+import com.example.citysearch.data.CityDto
 import com.example.citysearch.data.ICitiesRemoteApi
 import com.example.citysearch.data.RemoteDataSource
 import com.example.citysearch.domain.FetchCitiesUseCase
@@ -33,7 +34,7 @@ class CitySearchShould {
    fun setup(){
 
         val fakeCitiesRemoteApi = object : ICitiesRemoteApi{
-            override suspend fun fetchCities() = Response.success(TestDataProvider.provideDTOS(true))
+            override suspend fun fetchCities(): Response<List<CityDto>> = Response.success(TestDataProvider.provideDTOS())
         }
 
         val remoteDataSource = RemoteDataSource(fakeCitiesRemoteApi)
@@ -50,7 +51,7 @@ class CitySearchShould {
     @Test
     fun fetchCities(){
         val expected = listOf(CitiesUIState(),CitiesUIState(loading = true),
-            CitiesUIState(loading = false,cities = TestDataProvider.provideDomainModels(true))
+            CitiesUIState(loading = false,cities = TestDataProvider.sort(TestDataProvider.provideDomainModels()))
         )
         uiController.fetchCities()
         val actual = uiController.uiStates
@@ -81,7 +82,7 @@ class CitySearchSpyUiController:LifecycleOwner {
 
     fun fetchCities() {
         viewModel.fetchCities()
-        countDownLatch.await(3000, TimeUnit.MILLISECONDS)
+        countDownLatch.await(5000, TimeUnit.MILLISECONDS)
 
     }
 

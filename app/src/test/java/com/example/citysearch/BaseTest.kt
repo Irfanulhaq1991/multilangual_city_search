@@ -17,9 +17,9 @@ open class BaseTest {
     }
 
 
-    @Test
-    fun  testfile(){
-        val data2 = TestDataProvider.provideDomainModels(true)
-        Truth.assertThat(data2.size).isEqualTo( 209557)
-    }
+//    @Test
+//    fun  testfile(){
+//        val data2 = TestDataProvider.provideDomainModels()
+//        Truth.assertThat(data2.size).isEqualTo( 1500)
+//    }
 }
