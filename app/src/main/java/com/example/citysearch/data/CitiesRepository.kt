@@ -14,11 +14,15 @@ class CitiesRepository(
 ) {
 
     suspend fun fetchCities() = withContext(Dispatchers.IO) {
-        remoteDataSource.fetchCities()
-            .map {
-                mapper.map(it)
-                    .also { cities -> appCache.put(CITY_CACHE_KEY, cities) }
-            }
+
+        if (appCache.isEmpty())
+            remoteDataSource.fetchCities()
+                .map {
+                    mapper.map(it)
+                        .also { cities -> appCache.put(CITY_CACHE_KEY, cities) }
+                }
+        else
+            Result.success(appCache[CITY_CACHE_KEY])
     }
 }
 

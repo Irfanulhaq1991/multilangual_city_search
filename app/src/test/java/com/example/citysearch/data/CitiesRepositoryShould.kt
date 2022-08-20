@@ -35,6 +35,8 @@ class CitiesRepositoryShould : BaseTest()  {
     @Test
     fun returnNoCity() = runTest {
         val expected = Result.success(emptyList<CityDto>())
+
+        coEvery { appCache.isEmpty() } answers { true }
         coEvery {  remoteDataSource.fetchCities() } answers { expected }
 
         val result = citiesRepository.fetchCities()
@@ -46,6 +48,8 @@ class CitiesRepositoryShould : BaseTest()  {
     fun returnOneCity() = runTest {
         val data = TestDataProvider.sort(TestDataProvider.provideDomainModels().subList(0,0))
         val expected = Result.success(data)
+
+        coEvery { appCache.isEmpty() } answers { true }
         coEvery { remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS().subList(0,0)) }
 
         val result = citiesRepository.fetchCities()
@@ -56,7 +60,7 @@ class CitiesRepositoryShould : BaseTest()  {
 
     @Test
     fun returnManyCities() = runTest{
-
+        coEvery { appCache.isEmpty() } answers { true }
         coEvery {  remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
         val expected = Result.success(TestDataProvider.sort(TestDataProvider.provideDomainModels()))
 
@@ -68,6 +72,7 @@ class CitiesRepositoryShould : BaseTest()  {
     @Test
     fun returnError() = runTest{
         val expected = "No internet"
+        coEvery { appCache.isEmpty() } answers { true }
         coEvery {  remoteDataSource.fetchCities() } answers { Result.failure(Throwable(expected)) }
 
         val result = citiesRepository.fetchCities()
@@ -84,6 +89,8 @@ class CitiesRepositoryShould : BaseTest()  {
 
     @Test
     fun putInCacheTheMappedData()= runTest{
+
+        coEvery { appCache.isEmpty() } answers { true }
         coEvery {  remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
 
         citiesRepository.fetchCities()
@@ -95,12 +102,12 @@ class CitiesRepositoryShould : BaseTest()  {
     @Test
     fun getInCachedMappedData() = runTest {
         coEvery { appCache.isEmpty() } answers { false }
-        coEvery { appCache.getData(any()) } answers { TestDataProvider.provideDomainModels() }
+        coEvery { appCache[any()] } answers { TestDataProvider.provideDomainModels() }
         coEvery { remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
 
         citiesRepository.fetchCities()
         coVerify(exactly = 0) { remoteDataSource.fetchCities() }
-        coVerify { appCache.getData(any()) }
+        coVerify { appCache[any()] }
     }
 
 
