@@ -93,7 +93,7 @@ class CitiesRepositoryShould : BaseTest()  {
         citiesRepository.fetchCities()
 
         coVerify { remoteDataSource.fetchCities() }
-        coVerify { appCache.put(any(),any()) }
+        coVerify { appCache[any()] = any() }
     }
 
     @Test
@@ -118,8 +118,6 @@ class CitiesRepositoryShould : BaseTest()  {
         coVerify { remoteDataSource.fetchCities() }
         coVerify(exactly = 0){ appCache[any()] }
     }
-
-
 }
 
 
