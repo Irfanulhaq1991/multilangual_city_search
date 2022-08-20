@@ -9,20 +9,20 @@ const val CITY_CACHE_KEY = "citycachekey"
 
 class CitiesRepository(
     private val remoteDataSource: RemoteDataSource,
-    private val appCache: AppCache<String, List<City>>,
+    private val appLruCache: IAppCache<String, List<City>>,
     private val mapper: IMapper<List<CityDto>, List<City>>
 ) {
 
     suspend fun fetchCities() = withContext(Dispatchers.IO) {
         try {
-        if (appCache.isEmpty())
+        if (appLruCache.isEmpty())
             remoteDataSource.fetchCities()
                 .map {
                     mapper.map(it)
-                        .also { cities -> appCache[CITY_CACHE_KEY] = cities }
+                        .also { cities -> appLruCache[CITY_CACHE_KEY] = cities }
                 }
         else
-            Result.success(appCache[CITY_CACHE_KEY])
+            Result.success(appLruCache[CITY_CACHE_KEY])
         }catch (e:Exception){
             Result.failure(Throwable(e.message))
         }

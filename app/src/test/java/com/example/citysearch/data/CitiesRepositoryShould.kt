@@ -7,12 +7,10 @@ import com.example.citysearch.domain.CityMapper
 import com.google.common.truth.Truth
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import java.lang.Exception
 import java.lang.IllegalArgumentException
 
 
@@ -23,7 +21,7 @@ class CitiesRepositoryShould : BaseTest()  {
     @RelaxedMockK
     private lateinit var remoteDataSource: RemoteDataSource
     @RelaxedMockK
-    private lateinit var appCache: AppCache<String,List<City>>
+    private lateinit var appLruCache: AppLruCache<String,List<City>>
 
     private lateinit var citiesRepository: CitiesRepository
 
@@ -31,13 +29,13 @@ class CitiesRepositoryShould : BaseTest()  {
     override fun setUp() {
         super.setUp()
         val mapper = CityMapper()
-        citiesRepository = CitiesRepository(remoteDataSource,appCache,mapper)
+        citiesRepository = CitiesRepository(remoteDataSource,appLruCache,mapper)
     }
 
     @Test
     fun returnNoCity() = runTest {
         //Given
-        coEvery { appCache.isEmpty() } answers { true }
+        coEvery { appLruCache.isEmpty() } answers { true }
         coEvery {  remoteDataSource.fetchCities() } answers { Result.success(emptyList())}
 
         //When
@@ -49,7 +47,7 @@ class CitiesRepositoryShould : BaseTest()  {
 
     @Test
     fun returnOneCity() = runTest {
-        coEvery { appCache.isEmpty() } answers { true }
+        coEvery { appLruCache.isEmpty() } answers { true }
         coEvery { remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS().subList(0,0)) }
 
         val result = citiesRepository.fetchCities()
@@ -60,7 +58,7 @@ class CitiesRepositoryShould : BaseTest()  {
 
     @Test
     fun returnManyCities() = runTest{
-        coEvery { appCache.isEmpty() } answers { true }
+        coEvery { appLruCache.isEmpty() } answers { true }
         coEvery {  remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
 
         val result = citiesRepository.fetchCities()
@@ -71,7 +69,7 @@ class CitiesRepositoryShould : BaseTest()  {
 
     @Test
     fun returnError() = runTest{
-        coEvery { appCache.isEmpty() } answers { true }
+        coEvery { appLruCache.isEmpty() } answers { true }
         coEvery {  remoteDataSource.fetchCities() } answers { Result.failure(Throwable("No internet")) }
 
         val result = citiesRepository.fetchCities()
@@ -83,42 +81,42 @@ class CitiesRepositoryShould : BaseTest()  {
     @Test
     fun putInCacheTheMappedData()= runTest{
 
-        coEvery { appCache.isEmpty() } answers { true }
+        coEvery { appLruCache.isEmpty() } answers { true }
         coEvery {  remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
 
         citiesRepository.fetchCities()
 
         coVerify { remoteDataSource.fetchCities() }
-        coVerify { appCache[any()] = any() }
+        coVerify { appLruCache[any()] = any() }
     }
 
     @Test
     fun getInCachedMappedData() = runTest {
-        coEvery { appCache.isEmpty() } answers { false }
+        coEvery { appLruCache.isEmpty() } answers { false }
         coEvery { remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
 
         citiesRepository.fetchCities()
 
         coVerify(exactly = 0) { remoteDataSource.fetchCities() }
-        coVerify { appCache[any()] }
+        coVerify { appLruCache[any()] }
     }
 
 
     @Test
     fun getRemoteDataIfNoCacheDataIAvailable() = runTest {
-        coEvery { appCache.isEmpty() } answers { true }
+        coEvery { appLruCache.isEmpty() } answers { true }
         coEvery { remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
 
         citiesRepository.fetchCities()
 
         coVerify { remoteDataSource.fetchCities() }
-        coVerify(exactly = 0){ appCache[any()] }
+        coVerify(exactly = 0){ appLruCache[any()] }
     }
 
     @Test
     fun returnErrorWhenPuttingInCache() = runTest{
-        coEvery { appCache.isEmpty() } answers { true }
-        coEvery {  appCache[any()] = any() } throws IllegalArgumentException("Unknown Error occurred")
+        coEvery { appLruCache.isEmpty() } answers { true }
+        coEvery {  appLruCache[any()] = any() } throws IllegalArgumentException("Unknown Error occurred")
         coEvery {  remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
 
 
@@ -130,8 +128,8 @@ class CitiesRepositoryShould : BaseTest()  {
 
     @Test
     fun returnErrorWhenGettingInCache() = runTest{
-        coEvery { appCache.isEmpty() } answers { false }
-        coEvery {  appCache[any()]} throws NullPointerException("Unknown Error occurred")
+        coEvery { appLruCache.isEmpty() } answers { false }
+        coEvery {  appLruCache[any()]} throws NullPointerException("Unknown Error occurred")
         coEvery {  remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
 
 

@@ -36,7 +36,7 @@ class CitySearchShould {
 
         val remoteDataSource = RemoteDataSource(fakeCitiesRemoteApi)
         val mapper = CityMapper()
-        val appCache = AppCache<String,List<City>>()
+        val appCache = AppLruCache<String,List<City>>()
         val citiesRepository = CitiesRepository(remoteDataSource, appCache, mapper)
         val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository)
         val viewModel = CitiesViewModel(fetchCitiesUseCase)
