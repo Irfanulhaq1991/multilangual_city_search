@@ -4,10 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import com.example.citysearch.data.CitiesRepository
-import com.example.citysearch.data.CityDto
-import com.example.citysearch.data.ICitiesRemoteApi
-import com.example.citysearch.data.RemoteDataSource
+import com.example.citysearch.data.*
 import com.example.citysearch.domain.FetchCitiesUseCase
 import com.example.citysearch.domain.CityMapper
 import com.example.citysearch.view.CitiesUIState
@@ -39,7 +36,8 @@ class CitySearchShould {
 
         val remoteDataSource = RemoteDataSource(fakeCitiesRemoteApi)
         val mapper = CityMapper()
-        val citiesRepository = CitiesRepository(remoteDataSource,mapper)
+        val appCache = AppCache<String,List<City>>()
+        val citiesRepository = CitiesRepository(remoteDataSource, appCache, mapper)
         val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository)
         val viewModel = CitiesViewModel(fetchCitiesUseCase)
         uiController = CitySearchSpyUiController().apply { this.viewModel = viewModel }

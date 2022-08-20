@@ -1,12 +1,14 @@
 package com.example.citysearch.data
 
 import com.example.citysearch.BaseTest
+import com.example.citysearch.City
 import com.example.citysearch.TestDataProvider
 import com.example.citysearch.domain.CityMapper
 import com.google.common.truth.Truth
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -14,15 +16,20 @@ import org.junit.Test
 
 class CitiesRepositoryShould : BaseTest()  {
 
+
+
     @MockK
     private lateinit var remoteDataSource: RemoteDataSource
+    @RelaxedMockK
+    private lateinit var appCache: AppCache<String,List<City>>
+
     private lateinit var citiesRepository: CitiesRepository
 
     @Before
     override fun setUp() {
         super.setUp()
         val mapper = CityMapper()
-        citiesRepository = CitiesRepository(remoteDataSource,mapper)
+        citiesRepository = CitiesRepository(remoteDataSource,appCache,mapper)
     }
 
     @Test
@@ -80,6 +87,7 @@ class CitiesRepositoryShould : BaseTest()  {
         coEvery {  remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
 
         citiesRepository.fetchCities()
+
         coVerify { remoteDataSource.fetchCities() }
         coVerify { appCache.put(any(),any()) }
     }
