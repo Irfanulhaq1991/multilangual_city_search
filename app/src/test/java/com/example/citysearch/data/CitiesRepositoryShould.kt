@@ -5,6 +5,7 @@ import com.example.citysearch.TestDataProvider
 import com.example.citysearch.domain.CityMapper
 import com.google.common.truth.Truth
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -73,6 +74,15 @@ class CitiesRepositoryShould : BaseTest()  {
      -  if no data cache data is avail the fetch remote data source data
      -  Errors procrastinated
      */
+
+    @Test
+    fun putInCacheTheMappedData()= runTest{
+        coEvery {  remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
+
+        citiesRepository.fetchCities()
+        coVerify { remoteDataSource.fetchCities() }
+        coVerify { appCache.put(any(),any()) }
+    }
 
 }
 
