@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleRegistry
 import com.example.citysearch.data.*
 import com.example.citysearch.domain.FetchCitiesUseCase
 import com.example.citysearch.domain.CityMapper
+import com.example.citysearch.domain.Pager
 import com.example.citysearch.view.CitiesUIState
 import com.example.citysearch.view.CitiesViewModel
 import com.google.common.truth.Truth
@@ -38,7 +39,8 @@ class CitySearchShould {
         val mapper = CityMapper()
         val appCache = AppLruCache<String,List<City>>()
         val citiesRepository = CitiesRepository(remoteDataSource, appCache, mapper)
-        val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository)
+        val pager = Pager()
+        val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository, pager)
         val viewModel = CitiesViewModel(fetchCitiesUseCase)
         uiController = CitySearchSpyUiController().apply { this.viewModel = viewModel }
         uiController.onCreate()
