@@ -39,7 +39,7 @@ class CitySearchShould {
         val mapper = CityMapper()
         val appCache = AppLruCache<String,List<City>>()
         val citiesRepository = CitiesRepository(remoteDataSource, appCache, mapper)
-        val pager = Pager()
+        val pager = Pager(-1)
         val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository, pager)
         val viewModel = CitiesViewModel(fetchCitiesUseCase)
         uiController = CitySearchSpyUiController().apply { this.viewModel = viewModel }
