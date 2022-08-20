@@ -136,7 +136,7 @@ class CitiesRepositoryShould : BaseTest()  {
 
     @Test
     fun returnErrorWhenGettingInCache() = runTest{
-        coEvery { appCache.isEmpty() } answers { true }
+        coEvery { appCache.isEmpty() } answers { false }
         coEvery {  appCache[any()]} throws NullPointerException("Unknown Error occurred")
         coEvery {  remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
 
