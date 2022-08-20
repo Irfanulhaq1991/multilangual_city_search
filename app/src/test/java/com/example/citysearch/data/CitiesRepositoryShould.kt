@@ -111,6 +111,17 @@ class CitiesRepositoryShould : BaseTest()  {
     }
 
 
+    @Test
+    fun getRemoteDataIfNoCacheDataIAvailable() = runTest {
+        coEvery { appCache.isEmpty() } answers { true }
+        coEvery { remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
+
+        citiesRepository.fetchCities()
+
+        coVerify { remoteDataSource.fetchCities() }
+        coVerify(exactly = 0){ appCache[any()] }
+    }
+
 
 }
 
