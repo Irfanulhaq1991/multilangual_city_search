@@ -13,19 +13,27 @@ class CitiesRepository(
     private val mapper: IMapper<List<CityDto>, List<City>>
 ) {
 
-    suspend fun fetchCities() = withContext(Dispatchers.IO) {
+    // the negative page and pageSize is the indicator to not page the data and return the complete list
+    suspend fun fetchCities(page: Int = -1, pageSize: Int = -1) = withContext(Dispatchers.IO) {
         try {
-        if (appLruCache.isEmpty())
-            remoteDataSource.fetchCities()
-                .map {
-                    mapper.map(it)
-                        .also { cities -> appLruCache[CITY_CACHE_KEY] = cities }
-                }
-        else
-            Result.success(appLruCache[CITY_CACHE_KEY])
-        }catch (e:Exception){
+            if (appLruCache.isEmpty())
+                remoteDataSource.fetchCities()
+                    .map {
+                        mapper.map(it)
+                            .also { cities -> appLruCache[CITY_CACHE_KEY] = cities }
+                    }.map { pageTheData(it, page, pageSize) }
+            else
+                Result.success(pageTheData(appLruCache[CITY_CACHE_KEY], page, pageSize))
+        } catch (e: Exception) {
             Result.failure(Throwable(e.message))
         }
+    }
+
+
+    private fun pageTheData(data: List<City>, page: Int, pageSize: Int): List<City> {
+        if (pageSize < 0 || page + pageSize > data.size) return data
+        return data.subList(page, page + pageSize)
+
     }
 }
 
