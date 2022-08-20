@@ -14,7 +14,7 @@ class CitiesRepository(
 ) {
 
     suspend fun fetchCities() = withContext(Dispatchers.IO) {
-
+        try {
         if (appCache.isEmpty())
             remoteDataSource.fetchCities()
                 .map {
@@ -23,6 +23,9 @@ class CitiesRepository(
                 }
         else
             Result.success(appCache[CITY_CACHE_KEY])
+        }catch (e:Exception){
+            Result.failure(Throwable(e.message))
+        }
     }
 }
 
