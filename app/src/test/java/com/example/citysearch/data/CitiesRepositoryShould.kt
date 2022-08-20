@@ -92,6 +92,19 @@ class CitiesRepositoryShould : BaseTest()  {
         coVerify { appCache.put(any(),any()) }
     }
 
+    @Test
+    fun getInCachedMappedData() = runTest {
+        coEvery { appCache.isEmpty() } answers { false }
+        coEvery { appCache.getData(any()) } answers { TestDataProvider.provideDomainModels() }
+        coEvery { remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
+
+        citiesRepository.fetchCities()
+        coVerify(exactly = 0) { remoteDataSource.fetchCities() }
+        coVerify { appCache.getData(any()) }
+    }
+
+
+
 }
 
 
