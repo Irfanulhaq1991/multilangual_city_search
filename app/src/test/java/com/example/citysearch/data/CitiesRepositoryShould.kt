@@ -38,6 +38,7 @@ class CitiesRepositoryShould : BaseTest()  {
         coEvery { appLruCache.isEmpty() } answers { true }
         coEvery {  remoteDataSource.fetchCities() } answers { Result.success(emptyList())}
 
+        
         //When
         val result = citiesRepository.fetchCities()
 
@@ -49,6 +50,13 @@ class CitiesRepositoryShould : BaseTest()  {
     fun returnOneCity() = runTest {
         coEvery { appLruCache.isEmpty() } answers { true }
         coEvery { remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS().subList(0,0)) }
+
+        /*
+       - provided a page and item count the repository should the total cities which less than page
+
+       */
+
+
 
         val result = citiesRepository.fetchCities()
 
@@ -62,6 +70,15 @@ class CitiesRepositoryShould : BaseTest()  {
         coEvery {  remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
 
         val result = citiesRepository.fetchCities()
+
+        /*
+         - provided a page and item count the repository should return a page of size of item count
+
+         */
+
+
+
+
 
         Truth.assertThat(result)
             .isEqualTo(Result.success(TestDataProvider.sort(TestDataProvider.provideDomainModels())))

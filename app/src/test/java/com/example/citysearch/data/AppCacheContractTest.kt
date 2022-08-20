@@ -11,10 +11,6 @@ import java.lang.IllegalArgumentException
 
 abstract class AppCacheContractTest() : BaseTest() {
 
-    @Before
-    override fun setUp() {
-    }
-
     @Test
     fun set() {
         val appCache = withNonNullType()
