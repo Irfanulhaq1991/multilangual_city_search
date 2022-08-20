@@ -79,12 +79,6 @@ class CitiesRepositoryShould : BaseTest()  {
         Truth.assertThat(isFailureWithMessage(result, "No internet")).isTrue()
     }
 
-    /*
-     -  save the the mapped data in cacheDataSource
-     -  return the cache data source data instead of remote data source data
-     -  if no data cache data is avail the fetch remote data source data
-     -  Errors procrastinated
-     */
 
     @Test
     fun putInCacheTheMappedData()= runTest{
