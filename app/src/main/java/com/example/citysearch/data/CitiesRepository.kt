@@ -19,7 +19,7 @@ class CitiesRepository(
             remoteDataSource.fetchCities()
                 .map {
                     mapper.map(it)
-                        .also { cities -> appCache.put(CITY_CACHE_KEY, cities) }
+                        .also { cities -> appCache[CITY_CACHE_KEY] = cities }
                 }
         else
             Result.success(appCache[CITY_CACHE_KEY])

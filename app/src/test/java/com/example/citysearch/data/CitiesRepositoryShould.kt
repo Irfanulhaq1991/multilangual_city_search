@@ -12,13 +12,15 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import java.lang.Exception
+import java.lang.IllegalArgumentException
 
 
 class CitiesRepositoryShould : BaseTest()  {
 
 
 
-    @MockK
+    @RelaxedMockK
     private lateinit var remoteDataSource: RemoteDataSource
     @RelaxedMockK
     private lateinit var appCache: AppCache<String,List<City>>
@@ -118,6 +120,20 @@ class CitiesRepositoryShould : BaseTest()  {
         coVerify { remoteDataSource.fetchCities() }
         coVerify(exactly = 0){ appCache[any()] }
     }
+
+    @Test
+    fun returnErrorWhenPuttingInCache() = runTest{
+        coEvery { appCache.isEmpty() } answers { true }
+        coEvery {  appCache[any()] = any() } throws IllegalArgumentException("Unknown Error occurred")
+        coEvery {  remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
+
+
+        val result = citiesRepository.fetchCities()
+
+        Truth.assertThat(isFailureWithMessage(result, "Unknown Error occurred"))
+            .isTrue()
+    }
+
 }
 
 
