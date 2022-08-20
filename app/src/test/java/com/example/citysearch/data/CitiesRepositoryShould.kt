@@ -134,6 +134,20 @@ class CitiesRepositoryShould : BaseTest()  {
             .isTrue()
     }
 
+    @Test
+    fun returnErrorWhenGettingInCache() = runTest{
+        coEvery { appCache.isEmpty() } answers { true }
+        coEvery {  appCache[any()]} throws NullPointerException("Unknown Error occurred")
+        coEvery {  remoteDataSource.fetchCities() } answers { Result.success(TestDataProvider.provideDTOS()) }
+
+
+        val result = citiesRepository.fetchCities()
+
+        Truth.assertThat(isFailureWithMessage(result, "Unknown Error occurred"))
+            .isTrue()
+    }
+
+
 }
 
 
