@@ -32,6 +32,8 @@ class CitiesRepository(
 
     // Paging the data if requested
     private fun pageTheData(data: List<City>, page: Int, pageSize: Int): List<City> {
+        val data2 = data
+        val data3 = data.subList(page, page + pageSize)
         return if (pageSize < 0 || data.isEmpty())  // either no paging is requested or data is empty
             data
         else if (page + pageSize >= data.size)      // the paging upper bound

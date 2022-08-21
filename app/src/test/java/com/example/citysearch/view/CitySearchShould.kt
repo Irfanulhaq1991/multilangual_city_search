@@ -5,12 +5,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import com.example.citysearch.data.*
-import com.example.citysearch.domain.FetchCitiesUseCase
-import com.example.citysearch.domain.CityMapper
-import com.example.citysearch.domain.Pager
+import com.example.citysearch.domain.*
 import com.example.citysearch.view.CitiesUIState
 import com.example.citysearch.view.CitiesViewModel
 import com.google.common.truth.Truth
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -22,44 +21,107 @@ class CitySearchShould {
 
     @get:Rule
     val liveDataRule = InstantTaskExecutorRule()
+
     @get:Rule
     val coroutineRul = CoroutineTestRule()
 
 
-    private lateinit var  uiController: CitySearchSpyUiController
+    private lateinit var uiController: CitySearchSpyUiController
+
+    private val pageSize = 2
+    private var dto = emptyList<CityDto>()
+    private var domain = emptyList<City>()
+
 
     @Before
-   fun setup(){
+    fun setup() {
+        dto = TestDataProvider.provideDTOS()
+        domain = TestDataProvider.provideDomainModels()
 
-        val fakeCitiesRemoteApi = object : ICitiesRemoteApi{
-            override suspend fun fetchCities(): Response<List<CityDto>> = Response.success(TestDataProvider.provideDTOS())
+
+        val fakeCitiesRemoteApi = object : ICitiesRemoteApi {
+            override suspend fun fetchCities(): Response<List<CityDto>> =
+                Response.success(dto)
         }
 
         val remoteDataSource = RemoteDataSource(fakeCitiesRemoteApi)
         val mapper = CityMapper()
-        val appCache = AppLruCache<String,List<City>>()
+        val appCache = AppLruCache<String, List<City>>()
         val citiesRepository = CitiesRepository(remoteDataSource, appCache, mapper)
-        val pager = Pager(-1)
+        val pager = Pager(pageSize)
         val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository, pager)
         val viewModel = CitiesViewModel(fetchCitiesUseCase)
         uiController = CitySearchSpyUiController().apply { this.viewModel = viewModel }
         uiController.onCreate()
 
-   }
+    }
+
+    @After
+    fun tearDown() {
+        dto = emptyList<CityDto>()
+        domain = emptyList<City>()
+    }
+
+    @Test
+    fun fetchCities() {
+        val expected = listOf(
+            CitiesUIState(loading = true),
+            CitiesUIState(loading = false,
+                cities = TestDataProvider.sort(domain)
+                    .subList(0, pageSize)
+            )
+        )
+
+        uiController.fetchCities(PAGE_STAY)
+        val actual = uiController.uiStates
+
+        Truth.assertThat(actual).isEqualTo(expected)
+    }
 
 
     @Test
-    fun fetchCities(){
-        val expected = listOf(CitiesUIState(),CitiesUIState(loading = true),
-            CitiesUIState(loading = false,cities = TestDataProvider.sort(TestDataProvider.provideDomainModels()))
+    fun scrollInBoThDirections() {
+
+        //Given
+        var expected = listOf(
+            CitiesUIState(loading = true),
+            CitiesUIState(loading = false,
+                cities = TestDataProvider.sort(domain)
+                    .subList(0, pageSize)
+            ),
+            CitiesUIState(loading = true,
+                cities = TestDataProvider.sort(domain)
+                    .subList(0, pageSize)
+            ),
+            CitiesUIState(loading = false,
+                cities = TestDataProvider.sort(domain)
+                    .subList(pageSize, pageSize+pageSize)
+            ),
+            CitiesUIState(loading = true,
+                cities = TestDataProvider.sort(domain)
+                    .subList(pageSize, pageSize+pageSize)
+            ),
+            CitiesUIState(loading = false,
+                cities = TestDataProvider.sort(domain)
+                    .subList(0, pageSize)
+            )
         )
-        uiController.fetchCities()
-        val actual = uiController.uiStates
+
+
+        //When
+        uiController.fetchCities(PAGE_STAY)
+        uiController.fetchCities(PAGE_FORWARD)
+        uiController.fetchCities(PAGE_BACKWARD)
+
+        //Then
+       val  actual = uiController.uiStates
         Truth.assertThat(actual).isEqualTo(expected)
     }
+    
+
 }
 
-class CitySearchSpyUiController:LifecycleOwner {
+class CitySearchSpyUiController : LifecycleOwner {
 
     lateinit var viewModel: CitiesViewModel
     val uiStates = mutableListOf<CitiesUIState>() // Ui State list
@@ -69,19 +131,19 @@ class CitySearchSpyUiController:LifecycleOwner {
     private val registry: LifecycleRegistry by lazy { LifecycleRegistry(this) }
     override fun getLifecycle() = registry
 
-    fun onCreate(){
+    fun onCreate() {
         registry.currentState = Lifecycle.State.STARTED
-        viewModel.citiesLiveData.observe(this,{
+        viewModel.citiesLiveData.observe(this, {
             uiStates.add(it)
-            if(uiStates.size == 3) {
+            if (uiStates.size == 3) {
                 countDownLatch.countDown()
             }
         })
     }
 
 
-    fun fetchCities() {
-        viewModel.fetchCities()
+    fun fetchCities(scrollDir: Int) {
+        viewModel.fetchCities(scrollDir)
         countDownLatch.await(5000, TimeUnit.MILLISECONDS)
 
     }

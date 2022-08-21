@@ -39,7 +39,7 @@ class CitiesViewModelShould: BaseTest(){
     fun fetchCities() = runTest{
         coEvery { fetchCitiesUseCase(PAGE_STAY) } answers { Result.success(TestDataProvider.provideDomainModels()) }
 
-        viewModel.fetchCities()
+        viewModel.fetchCities(0)
         coVerify { fetchCitiesUseCase(PAGE_STAY)}
     }
 

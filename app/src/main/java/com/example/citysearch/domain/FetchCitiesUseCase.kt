@@ -9,7 +9,7 @@ class FetchCitiesUseCase(private val citiesRepository: CitiesRepository, private
         val currentPage = pager.getNextPage(direction)
         val pageSize = pager.getPageSize()
 
-       return citiesRepository.fetchCities(pageSize,pageSize).also { it.map { pager.setCurrentPage(currentPage) } }
+       return citiesRepository.fetchCities(currentPage,pageSize).also { it.map { pager.setCurrentPage(currentPage) } }
      }
 
 
