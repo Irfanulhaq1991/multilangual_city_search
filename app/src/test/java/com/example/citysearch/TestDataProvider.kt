@@ -35,6 +35,12 @@ object TestDataProvider {
         return cities.sortedWith(compareBy(usCollator) { it.cityName})
     }
 
+    fun sortDto(cities:List<CityDto>):List<CityDto>{
+        val usCollator: Collator = Collator.getInstance(Locale.UK)
+        usCollator.strength = Collator.PRIMARY
+        return cities.sortedWith(compareBy(usCollator) { it.name})
+    }
+
    private fun readFileFromAssets(): String? {
 
         return try {

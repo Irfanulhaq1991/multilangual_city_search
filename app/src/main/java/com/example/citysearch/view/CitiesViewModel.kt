@@ -27,7 +27,7 @@ class CitiesViewModel(private val fetchCitiesUseCase: FetchCitiesUseCase) : View
     private fun proceed() {
         fetchJob = viewModelScope.launch {
             _citiesLiveData.value = _citiesLiveData.value!!.copy(loading = true)
-            fetchCitiesUseCase()
+            fetchCitiesUseCase(0)
                 .run { reduceState(this)}
 
         }

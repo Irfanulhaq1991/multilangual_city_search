@@ -33,7 +33,7 @@ class FetchCitiesUseCaseShould : BaseTest() {
     @Test
     fun fetchCities() = runTest {
         coEvery { citiesRepository.fetchCities(any(),any()) } answers { Result.success(TestDataProvider.provideDomainModels()) }
-        fetchCitiesUseCase()
+        fetchCitiesUseCase(PAGE_STAY)
         coVerify { citiesRepository.fetchCities(any(),any()) }
     }
 
@@ -41,15 +41,15 @@ class FetchCitiesUseCaseShould : BaseTest() {
     fun getNextPage() = runTest {
         coEvery { citiesRepository.fetchCities(any(),any()) } answers { Result.success(TestDataProvider.provideDomainModels()) }
 
-        fetchCitiesUseCase()
-        coVerify { pager.getNextPage() }
+        fetchCitiesUseCase(PAGE_STAY)
+        coVerify { pager.getNextPage(0) }
     }
 
     @Test
     fun getPageSize() = runTest {
         coEvery { citiesRepository.fetchCities(any(),any()) } answers { Result.success(TestDataProvider.provideDomainModels()) }
 
-        fetchCitiesUseCase()
+        fetchCitiesUseCase(PAGE_STAY)
 
         coVerify { pager.getPageSize() }
     }
@@ -58,8 +58,11 @@ class FetchCitiesUseCaseShould : BaseTest() {
     fun setCurrentPage() = runTest {
         coEvery { citiesRepository.fetchCities(any(),any()) } answers { Result.success(TestDataProvider.provideDomainModels()) }
 
-        fetchCitiesUseCase()
+        fetchCitiesUseCase(PAGE_STAY)
 
         coVerify { pager.setCurrentPage(0) }
     }
+
+
+
 }

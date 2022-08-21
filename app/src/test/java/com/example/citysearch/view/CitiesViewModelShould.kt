@@ -5,6 +5,7 @@ import com.example.citysearch.BaseTest
 import com.example.citysearch.CoroutineTestRule
 import com.example.citysearch.TestDataProvider
 import com.example.citysearch.domain.FetchCitiesUseCase
+import com.example.citysearch.domain.PAGE_STAY
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
@@ -36,10 +37,10 @@ class CitiesViewModelShould: BaseTest(){
 
     @Test
     fun fetchCities() = runTest{
-        coEvery { fetchCitiesUseCase() } answers { Result.success(TestDataProvider.provideDomainModels()) }
+        coEvery { fetchCitiesUseCase(PAGE_STAY) } answers { Result.success(TestDataProvider.provideDomainModels()) }
 
         viewModel.fetchCities()
-        coVerify { fetchCitiesUseCase()}
+        coVerify { fetchCitiesUseCase(PAGE_STAY)}
     }
 
 }
