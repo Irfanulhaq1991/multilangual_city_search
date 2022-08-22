@@ -14,24 +14,40 @@ class PagerShould {
     @Test
     fun returnForwardNextPage() {
         val pager = Pager(1)
-        Truth.assertThat(pager.getNextPage(PAGE_FORWARD)).isEqualTo(1)
+        pager.totalCount = 1
+        val expected = 1
+
+        val actual = pager.getNextPage(PAGE_FORWARD)
+
+        Truth
+            .assertThat(actual)
+            .isEqualTo(expected)
     }
 
     @Test
     fun returnBackwardNextPage() {
         val pager = Pager(1)
+
         pager.getNextPage(PAGE_FORWARD)
        val page =  pager.getNextPage(PAGE_BACKWARD)
-        Truth.assertThat(page).isEqualTo(0)
+
+        Truth
+            .assertThat(page)
+            .isEqualTo(0)
     }
 
     @Test
     fun returnBackwardTwiceNextPage() {
         val pager = Pager(1)
+
         pager.getNextPage(PAGE_FORWARD)
         pager.getNextPage(PAGE_BACKWARD)
+
        val page =  pager.getNextPage(PAGE_BACKWARD)
-        Truth.assertThat(page).isEqualTo(0)
+
+        Truth
+            .assertThat(page)
+            .isEqualTo(0)
     }
 
     @Test
@@ -43,14 +59,64 @@ class PagerShould {
     @Test
     fun updateCurrentPage() {
         val pager = Pager()
-        pager.setCurrentPage(5)
-        Truth.assertThat(pager.getNextPage(PAGE_STAY)).isEqualTo(5)
+        pager.currentPage = 5
+        Truth
+            .assertThat(pager.getNextPage(PAGE_STAY))
+            .isEqualTo(5)
     }
 
     @Test
     fun notUpdateCurrentPageToInValid() {
         val pager = Pager()
-        pager.setCurrentPage(-3)
-        Truth.assertThat(pager.getNextPage(PAGE_STAY)).isEqualTo(0)
+        pager.currentPage =-3
+        Truth
+            .assertThat(pager.getNextPage(PAGE_STAY))
+            .isEqualTo(0)
+    }
+
+    @Test
+    fun haveZeroTotalCount(){
+        val pager = Pager()
+
+        Truth
+            .assertThat(pager.totalCount)
+            .isEqualTo(0)
+    }
+
+    @Test
+    fun changeTotalCount(){
+        val pager = Pager()
+
+        pager.totalCount = 200
+
+        Truth
+            .assertThat(pager.totalCount)
+            .isEqualTo(200)
+    }
+
+    @Test
+    fun notExceedPageThanTotalCount(){
+        val pager = Pager(100)
+
+        pager.totalCount = 200
+        pager.currentPage =pager.getNextPage(PAGE_FORWARD)
+        pager.currentPage =pager.getNextPage(PAGE_FORWARD)
+        pager.currentPage =pager.getNextPage(PAGE_FORWARD)
+        val page = pager.getNextPage(PAGE_FORWARD)
+
+        Truth
+            .assertThat(pager.totalCount)
+            .isEqualTo(page)
+    }
+
+    @Test
+    fun notSetInvalidTotalCount(){
+        val pager = Pager()
+
+        pager.totalCount = -1
+
+        Truth
+            .assertThat(pager.totalCount)
+            .isEqualTo(0)
     }
 }

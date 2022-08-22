@@ -5,12 +5,18 @@ import com.example.citysearch.data.CitiesRepository
 
 class FetchCitiesUseCase(private val citiesRepository: CitiesRepository, private val pager: Pager) {
 
-    suspend operator fun invoke(direction: Int):Result<List<City>> {
+    suspend operator fun invoke(direction: Int): Result<List<City>> {
         val currentPage = pager.getNextPage(direction)
         val pageSize = pager.getPageSize()
 
-       return citiesRepository.fetchCities(currentPage,pageSize).also { it.map { pager.setCurrentPage(currentPage) } }
-     }
+        return citiesRepository
+            .fetchCities(currentPage, pageSize).also { }
+            .map {
+                pager.totalCount = it.second
+                pager.currentPage = currentPage
+                it.first
+            }
+    }
 
 
 }
