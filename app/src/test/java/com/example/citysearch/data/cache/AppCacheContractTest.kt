@@ -1,11 +1,11 @@
-package com.example.citysearch.data
+package com.example.citysearch.data.cache
 
 import com.example.citysearch.BaseTest
 import com.example.citysearch.City
-import com.example.citysearch.TestDataProvider
+import com.example.citysearch.data.CITY_CACHE_KEY
+import com.example.citysearch.data.TestDataProviderProvider
 import com.google.common.truth.Truth
 import org.junit.Assert.assertThrows
-import org.junit.Before
 import org.junit.Test
 import java.lang.IllegalArgumentException
 
@@ -14,14 +14,14 @@ abstract class AppCacheContractTest() : BaseTest() {
     @Test
     fun set() {
         val appCache = withNonNullType()
-        appCache[CITY_CACHE_KEY] = TestDataProvider.provideDomainModels()
+        appCache[CITY_CACHE_KEY] = TestDataProviderProvider.provideDomainModels()
         Truth.assertThat(appCache.isEmpty()).isEqualTo(false)
     }
 
     @Test
     fun emptied() {
         val appCache = withNonNullType()
-        appCache[CITY_CACHE_KEY] = TestDataProvider.provideDomainModels()
+        appCache[CITY_CACHE_KEY] = TestDataProviderProvider.provideDomainModels()
         appCache.clear()
         Truth.assertThat(appCache.isEmpty()).isEqualTo(true)
     }
@@ -29,9 +29,9 @@ abstract class AppCacheContractTest() : BaseTest() {
     @Test
     fun get() {
         val appCache = withNonNullType()
-        appCache[CITY_CACHE_KEY] = TestDataProvider.provideDomainModels()
+        appCache[CITY_CACHE_KEY] = TestDataProviderProvider.provideDomainModels()
         val v = appCache[CITY_CACHE_KEY]
-        Truth.assertThat(v).isEqualTo(TestDataProvider.provideDomainModels())
+        Truth.assertThat(v).isEqualTo(TestDataProviderProvider.provideDomainModels())
     }
 
     @Test
@@ -50,8 +50,8 @@ abstract class AppCacheContractTest() : BaseTest() {
         }
     }
 
-    abstract fun withNullType():IAppCache<String?,List<City>?>
+    abstract fun withNullType(): IAppCache<String?, List<City>?>
 
-  abstract fun withNonNullType():IAppCache<String,List<City>>
+  abstract fun withNonNullType(): IAppCache<String, List<City>>
 
 }

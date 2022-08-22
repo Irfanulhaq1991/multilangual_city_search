@@ -2,7 +2,8 @@ package com.example.citysearch.data
 
 import com.example.citysearch.BaseTest
 import com.example.citysearch.City
-import com.example.citysearch.TestDataProvider
+import com.example.citysearch.data.cache.AppLruCache
+import com.example.citysearch.data.localfile.FileDataSource
 import com.example.citysearch.domain.CityMapper
 import com.google.common.truth.Truth
 import io.mockk.coEvery
@@ -19,7 +20,7 @@ class CitiesRepositoryShould : BaseTest() {
 
 
     @RelaxedMockK
-    private lateinit var remoteDataSource: RemoteDataSource
+    private lateinit var dataSource: FileDataSource
 
     @RelaxedMockK
     private lateinit var appLruCache: AppLruCache<String, List<City>>
@@ -34,10 +35,10 @@ class CitiesRepositoryShould : BaseTest() {
     override fun setUp() {
         super.setUp()
         val mapper = CityMapper()
-        citiesRepository = CitiesRepository(remoteDataSource, appLruCache, mapper)
+        citiesRepository = CitiesRepository(dataSource, appLruCache, mapper)
 
-        testDto = TestDataProvider.provideDTOS()
-        testDomain = TestDataProvider.provideDomainModels()
+        testDto = TestDataProviderProvider.provideDTOS()
+        testDomain = TestDataProviderProvider.provideDomainModels()
         totalCount = testDomain.size
     }
 
@@ -53,7 +54,7 @@ class CitiesRepositoryShould : BaseTest() {
     fun returnNoCity() = runTest {
         //Given
         coEvery { appLruCache.isEmpty() } answers { true }
-        coEvery { remoteDataSource.fetchCities() } answers { Result.success(emptyList()) }
+        coEvery { dataSource.fetchCities() } answers { Result.success(emptyList()) }
 
 
         //When
@@ -66,9 +67,9 @@ class CitiesRepositoryShould : BaseTest() {
     @Test
     fun returnOneCity() = runTest {
         coEvery { appLruCache.isEmpty() } answers { true }
-        coEvery { remoteDataSource.fetchCities() } answers {
+        coEvery { dataSource.fetchCities() } answers {
             Result.success(
-                TestDataProvider.sortDto(
+                TestDataProviderProvider.sortDto(
                     testDto
                 ).subList(0, 1)
             )
@@ -77,19 +78,19 @@ class CitiesRepositoryShould : BaseTest() {
         val result = citiesRepository.fetchCities(0, 50)
 
         Truth.assertThat(result)
-            .isEqualTo(Result.success(TestDataProvider.sort(testDomain.subList(0, 1))))
+            .isEqualTo(Result.success(TestDataProviderProvider.sortDomainModels(testDomain.subList(0, 1))))
     }
 
 
     @Test
     fun returnManyCities() = runTest {
         coEvery { appLruCache.isEmpty() } answers { true }
-        coEvery { remoteDataSource.fetchCities() } answers { Result.success(testDto) }
+        coEvery { dataSource.fetchCities() } answers { Result.success(testDto) }
 
         val result = citiesRepository.fetchCities(0, 50)
 
         Truth.assertThat(result)
-            .isEqualTo(Result.success(TestDataProvider.sort(testDomain).subList(0, 50)))
+            .isEqualTo(Result.success(TestDataProviderProvider.sortDomainModels(testDomain).subList(0, 50)))
     }
 
 
@@ -97,7 +98,7 @@ class CitiesRepositoryShould : BaseTest() {
     @Test
     fun returnCitiesPageIsGreaterThanEnd() = runTest {
         coEvery { appLruCache.isEmpty() } answers { true }
-        coEvery { remoteDataSource.fetchCities() } answers { Result.success(testDto) }
+        coEvery { dataSource.fetchCities() } answers { Result.success(testDto) }
 
         val pageSize = 5
         val startIndex = totalCount - pageSize
@@ -108,7 +109,7 @@ class CitiesRepositoryShould : BaseTest() {
         Truth.assertThat(result)
             .isEqualTo(
                 Result.success(
-                    TestDataProvider.sort(
+                    TestDataProviderProvider.sortDomainModels(
                         testDomain
                             .subList(startIndex, endIndex)
                     )
@@ -120,7 +121,7 @@ class CitiesRepositoryShould : BaseTest() {
     @Test
     fun returnCitiesPageIsEqualEnd() = runTest {
         coEvery { appLruCache.isEmpty() } answers { true }
-        coEvery { remoteDataSource.fetchCities() } answers { Result.success(testDto) }
+        coEvery { dataSource.fetchCities() } answers { Result.success(testDto) }
 
         val pageSize = 5
         val startIndex = totalCount - pageSize
@@ -131,7 +132,7 @@ class CitiesRepositoryShould : BaseTest() {
         Truth.assertThat(result)
             .isEqualTo(
                 Result.success(
-                    TestDataProvider.sort(
+                    TestDataProviderProvider.sortDomainModels(
                         testDomain
                             .subList(startIndex, endIndex)
                     )
@@ -143,7 +144,7 @@ class CitiesRepositoryShould : BaseTest() {
     @Test
     fun returnCitiesPagerSizeIsLessThanEnd() = runTest {
         coEvery { appLruCache.isEmpty() } answers { true }
-        coEvery { remoteDataSource.fetchCities() } answers { Result.success(testDto) }
+        coEvery { dataSource.fetchCities() } answers { Result.success(testDto) }
 
         val pageSize = 5
         val startIndex = totalCount - pageSize
@@ -154,7 +155,7 @@ class CitiesRepositoryShould : BaseTest() {
         Truth.assertThat(result)
             .isEqualTo(
                 Result.success(
-                    TestDataProvider.sort(
+                    TestDataProviderProvider.sortDomainModels(
                         testDomain
                             .subList(startIndex, endIndex)
                     )
@@ -167,7 +168,7 @@ class CitiesRepositoryShould : BaseTest() {
     @Test
     fun returnCitiesPagerSizeIsZero() = runTest {
         coEvery { appLruCache.isEmpty() } answers { true }
-        coEvery { remoteDataSource.fetchCities() } answers { Result.success(testDto) }
+        coEvery { dataSource.fetchCities() } answers { Result.success(testDto) }
 
         val pageSize = 0
         val startIndex = 0
@@ -178,7 +179,7 @@ class CitiesRepositoryShould : BaseTest() {
         Truth.assertThat(result)
             .isEqualTo(
                 Result.success(
-                    TestDataProvider.sort(
+                    TestDataProviderProvider.sortDomainModels(
                         testDomain
                             .subList(startIndex, endIndex)
                     )
@@ -190,7 +191,7 @@ class CitiesRepositoryShould : BaseTest() {
     @Test
     fun returnCitiesPagerSizeIsOne() = runTest {
         coEvery { appLruCache.isEmpty() } answers { true }
-        coEvery { remoteDataSource.fetchCities() } answers { Result.success(testDto) }
+        coEvery { dataSource.fetchCities() } answers { Result.success(testDto) }
 
         val pageSize = 1
         val startIndex = 0
@@ -201,7 +202,7 @@ class CitiesRepositoryShould : BaseTest() {
         Truth.assertThat(result)
             .isEqualTo(
                 Result.success(
-                    TestDataProvider.sort(
+                    TestDataProviderProvider.sortDomainModels(
                         testDomain
                             .subList(startIndex, endIndex)
                     )
@@ -213,17 +214,17 @@ class CitiesRepositoryShould : BaseTest() {
     @Test
     fun returnAllCities() = runTest {
         coEvery { appLruCache.isEmpty() } answers { true }
-        coEvery { remoteDataSource.fetchCities() } answers { Result.success(testDto) }
+        coEvery { dataSource.fetchCities() } answers { Result.success(testDto) }
 
         val result = citiesRepository.fetchCities()
 
-        Truth.assertThat(result).isEqualTo(Result.success(TestDataProvider.sort(testDomain)))
+        Truth.assertThat(result).isEqualTo(Result.success(TestDataProviderProvider.sortDomainModels(testDomain)))
     }
 
     @Test
     fun returnError() = runTest {
         coEvery { appLruCache.isEmpty() } answers { true }
-        coEvery { remoteDataSource.fetchCities() } answers { Result.failure(Throwable("No internet")) }
+        coEvery { dataSource.fetchCities() } answers { Result.failure(Throwable("No internet")) }
 
         val result = citiesRepository.fetchCities(0, 50)
 
@@ -235,42 +236,42 @@ class CitiesRepositoryShould : BaseTest() {
     fun putInCacheTheMappedData() = runTest {
 
         coEvery { appLruCache.isEmpty() } answers { true }
-        coEvery { remoteDataSource.fetchCities() } answers { Result.success(testDto) }
+        coEvery { dataSource.fetchCities() } answers { Result.success(testDto) }
 
         val result = citiesRepository.fetchCities(0, 50)
 
-        coVerify { remoteDataSource.fetchCities() }
+        coVerify { dataSource.fetchCities() }
         coVerify { appLruCache[any()] = any() }
         Truth.assertThat(result)
-            .isEqualTo(Result.success(TestDataProvider.sort(testDomain).subList(0, 50)))
+            .isEqualTo(Result.success(TestDataProviderProvider.sortDomainModels(testDomain).subList(0, 50)))
     }
 
     @Test
     fun getInCachedMappedData() = runTest {
         coEvery { appLruCache.isEmpty() } answers { false }
-        coEvery { remoteDataSource.fetchCities() } answers { Result.success(testDto) }
-        coEvery { appLruCache[any()] } answers { TestDataProvider.provideDomainModels() }
+        coEvery { dataSource.fetchCities() } answers { Result.success(testDto) }
+        coEvery { appLruCache[any()] } answers { TestDataProviderProvider.provideDomainModels() }
 
         val result = citiesRepository.fetchCities(0, 50)
 
-        coVerify(exactly = 0) { remoteDataSource.fetchCities() }
+        coVerify(exactly = 0) { dataSource.fetchCities() }
         coVerify { appLruCache[any()] }
         Truth.assertThat(result)
-            .isEqualTo(Result.success(TestDataProvider.sort(testDomain).subList(0, 50)))
+            .isEqualTo(Result.success(TestDataProviderProvider.sortDomainModels(testDomain).subList(0, 50)))
     }
 
 
     @Test
     fun getRemoteDataIfNoCacheDataIAvailable() = runTest {
         coEvery { appLruCache.isEmpty() } answers { true }
-        coEvery { remoteDataSource.fetchCities() } answers { Result.success(testDto) }
+        coEvery { dataSource.fetchCities() } answers { Result.success(testDto) }
 
         val result = citiesRepository.fetchCities(0, 50)
 
-        coVerify { remoteDataSource.fetchCities() }
+        coVerify { dataSource.fetchCities() }
         coVerify(exactly = 0) { appLruCache[any()] }
         Truth.assertThat(result)
-            .isEqualTo(Result.success(TestDataProvider.sort(testDomain).subList(0, 50)))
+            .isEqualTo(Result.success(TestDataProviderProvider.sortDomainModels(testDomain).subList(0, 50)))
     }
 
     @Test
@@ -279,7 +280,7 @@ class CitiesRepositoryShould : BaseTest() {
         coEvery {
             appLruCache[any()] = any()
         } throws IllegalArgumentException("Unknown Error occurred")
-        coEvery { remoteDataSource.fetchCities() } answers { Result.success(testDto) }
+        coEvery { dataSource.fetchCities() } answers { Result.success(testDto) }
 
 
         val result = citiesRepository.fetchCities(0, 50)
@@ -292,7 +293,7 @@ class CitiesRepositoryShould : BaseTest() {
     fun returnErrorWhenGettingInCache() = runTest {
         coEvery { appLruCache.isEmpty() } answers { false }
         coEvery { appLruCache[any()] } throws NullPointerException("Unknown Error occurred")
-        coEvery { remoteDataSource.fetchCities() } answers { Result.success(testDto) }
+        coEvery { dataSource.fetchCities() } answers { Result.success(testDto) }
 
 
         val result = citiesRepository.fetchCities(1, 50)

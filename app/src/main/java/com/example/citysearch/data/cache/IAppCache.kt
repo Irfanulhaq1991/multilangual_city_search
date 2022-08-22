@@ -1,4 +1,4 @@
-package com.example.citysearch.data
+package com.example.citysearch.data.cache
 
 interface IAppCache<K, V> {
     operator fun set(key: K, value: V)

@@ -1,7 +1,7 @@
 package com.example.citysearch.domain
 
 import com.example.citysearch.BaseTest
-import com.example.citysearch.TestDataProvider
+import com.example.citysearch.data.TestDataProviderProvider
 import com.example.citysearch.data.CitiesRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -32,14 +32,16 @@ class FetchCitiesUseCaseShould : BaseTest() {
     // White box test to verify the behavior
     @Test
     fun fetchCities() = runTest {
-        coEvery { citiesRepository.fetchCities(any(),any()) } answers { Result.success(TestDataProvider.provideDomainModels()) }
+        coEvery { citiesRepository.fetchCities(any(),any()) } answers { Result.success(
+            TestDataProviderProvider.provideDomainModels()) }
         fetchCitiesUseCase(PAGE_STAY)
         coVerify { citiesRepository.fetchCities(any(),any()) }
     }
 
     @Test
     fun getNextPage() = runTest {
-        coEvery { citiesRepository.fetchCities(any(),any()) } answers { Result.success(TestDataProvider.provideDomainModels()) }
+        coEvery { citiesRepository.fetchCities(any(),any()) } answers { Result.success(
+            TestDataProviderProvider.provideDomainModels()) }
 
         fetchCitiesUseCase(PAGE_STAY)
         coVerify { pager.getNextPage(0) }
@@ -47,7 +49,8 @@ class FetchCitiesUseCaseShould : BaseTest() {
 
     @Test
     fun getPageSize() = runTest {
-        coEvery { citiesRepository.fetchCities(any(),any()) } answers { Result.success(TestDataProvider.provideDomainModels()) }
+        coEvery { citiesRepository.fetchCities(any(),any()) } answers { Result.success(
+            TestDataProviderProvider.provideDomainModels()) }
 
         fetchCitiesUseCase(PAGE_STAY)
 
@@ -56,7 +59,8 @@ class FetchCitiesUseCaseShould : BaseTest() {
 
     @Test
     fun setCurrentPage() = runTest {
-        coEvery { citiesRepository.fetchCities(any(),any()) } answers { Result.success(TestDataProvider.provideDomainModels()) }
+        coEvery { citiesRepository.fetchCities(any(),any()) } answers { Result.success(
+            TestDataProviderProvider.provideDomainModels()) }
 
         fetchCitiesUseCase(PAGE_STAY)
 

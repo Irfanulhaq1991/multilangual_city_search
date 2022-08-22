@@ -1,7 +1,6 @@
 package com.example.citysearch.data
 
 import com.example.citysearch.BaseTest
-import com.example.citysearch.TestDataProvider
 import com.google.common.truth.Truth
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -23,8 +22,8 @@ abstract class ICitiesDataSourceContactTests : BaseTest() {
 
     @Test
     fun fetchOneCities() = runTest {
-        val remoteDataSource = withData(listOf(TestDataProvider.provideDTOS()[0]))
-        val expected = listOf(TestDataProvider.provideDTOS()[0])
+        val remoteDataSource = withData(listOf(TestDataProviderProvider.provideDTOS()[0]))
+        val expected = listOf(TestDataProviderProvider.provideDTOS()[0])
 
         val actual = remoteDataSource.fetchCities()
 
@@ -34,8 +33,8 @@ abstract class ICitiesDataSourceContactTests : BaseTest() {
 
     @Test
     fun fetchManyCities() = runTest {
-        val remoteDataSource = withData(TestDataProvider.provideDTOS())
-        val expected = Result.success(TestDataProvider.provideDTOS())
+        val remoteDataSource = withData(TestDataProviderProvider.provideDTOS())
+        val expected = Result.success(TestDataProviderProvider.provideDTOS())
 
         val actual = remoteDataSource.fetchCities()
 
@@ -46,12 +45,15 @@ abstract class ICitiesDataSourceContactTests : BaseTest() {
     @Test
     fun returnInternetError() = runTest {
         val remoteDataSource = withException(IOException())
-        val expect = "No internet"
+
+        val expectedErrorMessage = errorMessage()
 
         val actual = remoteDataSource.fetchCities()
 
-        Truth.assertThat(isFailureWithMessage(actual, expect)).isTrue()
+        Truth.assertThat(isFailureWithMessage(actual, expectedErrorMessage)).isTrue()
     }
+
+    abstract fun errorMessage(): String
 
 
     abstract fun withException(e: Exception): ICitiesDataSource

@@ -1,4 +1,4 @@
-package com.example.citysearch.data
+package com.example.citysearch.data.cache
 
 import com.example.citysearch.City
 

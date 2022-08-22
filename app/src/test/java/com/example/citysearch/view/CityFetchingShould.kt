@@ -5,6 +5,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import com.example.citysearch.data.*
+import com.example.citysearch.data.cache.AppLruCache
+import com.example.citysearch.data.localfile.FileDataSource
+import com.example.citysearch.data.localfile.JsonDataProvider
 import com.example.citysearch.domain.*
 import com.example.citysearch.view.CitiesUIState
 import com.example.citysearch.view.CitiesViewModel
@@ -35,16 +38,22 @@ class CityFetchingShould {
 
     @Before
     fun setup() {
-        dto = TestDataProvider.provideDTOS()
-        domain = TestDataProvider.provideDomainModels()
+        dto = TestDataProviderProvider.provideDTOS()
+        domain = TestDataProviderProvider.provideDomainModels()
 
 
-        val fakeCitiesRemoteApi = object : ICitiesRemoteApi {
-            override suspend fun fetchCities(): Response<List<CityDto>> =
-                Response.success(dto)
+        val fakeCitiesRemoteApi = object : JsonDataProvider() {
+            override fun getJsonCitiesFromAssets(): String? {
+                return "##"
+            }
+
+            override fun deSerializeAllCitiesJson(json: String): List<CityDto> {
+               return dto
+            }
+
         }
 
-        val remoteDataSource = RemoteDataSource(fakeCitiesRemoteApi)
+        val remoteDataSource = FileDataSource(fakeCitiesRemoteApi)
         val mapper = CityMapper()
         val appCache = AppLruCache<String, List<City>>()
         val citiesRepository = CitiesRepository(remoteDataSource, appCache, mapper)
@@ -67,7 +76,7 @@ class CityFetchingShould {
         val expected = listOf(
             CitiesUIState(loading = true),
             CitiesUIState(loading = false,
-                cities = TestDataProvider.sort(domain)
+                cities = TestDataProviderProvider.sortDomainModels(domain)
                     .subList(0, pageSize)
             )
         )
@@ -86,23 +95,23 @@ class CityFetchingShould {
         var expected = listOf(
             CitiesUIState(loading = true),
             CitiesUIState(loading = false,
-                cities = TestDataProvider.sort(domain)
+                cities = TestDataProviderProvider.sortDomainModels(domain)
                     .subList(0, pageSize)
             ),
             CitiesUIState(loading = true,
-                cities = TestDataProvider.sort(domain)
+                cities = TestDataProviderProvider.sortDomainModels(domain)
                     .subList(0, pageSize)
             ),
             CitiesUIState(loading = false,
-                cities = TestDataProvider.sort(domain)
+                cities = TestDataProviderProvider.sortDomainModels(domain)
                     .subList(pageSize, pageSize+pageSize)
             ),
             CitiesUIState(loading = true,
-                cities = TestDataProvider.sort(domain)
+                cities = TestDataProviderProvider.sortDomainModels(domain)
                     .subList(pageSize, pageSize+pageSize)
             ),
             CitiesUIState(loading = false,
-                cities = TestDataProvider.sort(domain)
+                cities = TestDataProviderProvider.sortDomainModels(domain)
                     .subList(0, pageSize)
             )
         )
