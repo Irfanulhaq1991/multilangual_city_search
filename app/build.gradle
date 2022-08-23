@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'androidx.navigation.safeargs'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -27,8 +29,8 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    dexOptions {
-        javaMaxHeapSize "4G"
+    buildFeatures {
+        dataBinding true
     }
 
     kotlinOptions {
@@ -44,8 +46,13 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
 
+    // navigation component
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
     // gson
     implementation 'com.google.code.gson:gson:2.9.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     // asynch
     def coroutineVersion = "1.6.0"
