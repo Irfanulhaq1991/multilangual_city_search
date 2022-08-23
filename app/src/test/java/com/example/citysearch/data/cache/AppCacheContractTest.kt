@@ -1,9 +1,9 @@
 package com.example.citysearch.data.cache
 
 import com.example.citysearch.BaseTest
-import com.example.citysearch.City
 import com.example.citysearch.data.CITY_CACHE_KEY
 import com.example.citysearch.data.TestDataProviderProvider
+import com.example.citysearch.domain.City
 import com.google.common.truth.Truth
 import org.junit.Assert.assertThrows
 import org.junit.Test

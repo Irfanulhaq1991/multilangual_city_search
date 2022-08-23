@@ -5,5 +5,4 @@ interface IAppCache<K, V> {
     operator fun get(key: K): V
     fun isEmpty(): Boolean
     fun clear()
-
 }

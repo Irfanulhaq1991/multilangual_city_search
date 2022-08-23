@@ -1,6 +1,7 @@
 package com.example.citysearch.view
 
-import com.example.citysearch.City
+import com.example.citysearch.domain.City
+
 
 data class CitiesUIState(
     val loading: Boolean = false,

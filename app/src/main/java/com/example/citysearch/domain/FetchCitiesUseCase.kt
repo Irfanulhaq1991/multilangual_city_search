@@ -1,6 +1,5 @@
 package com.example.citysearch.domain
 
-import com.example.citysearch.City
 import com.example.citysearch.data.CitiesRepository
 
 class FetchCitiesUseCase(private val citiesRepository: CitiesRepository, private val pager: Pager) {

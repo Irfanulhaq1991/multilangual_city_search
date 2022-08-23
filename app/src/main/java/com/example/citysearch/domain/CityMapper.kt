@@ -1,7 +1,5 @@
 package com.example.citysearch.domain
 
-import com.example.citysearch.City
-import com.example.citysearch.Coordinates
 import com.example.citysearch.data.CityDto
 import java.text.Collator
 import java.text.Normalizer

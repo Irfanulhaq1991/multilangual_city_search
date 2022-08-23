@@ -1,9 +1,9 @@
 package com.example.citysearch.data
 
 import com.example.citysearch.BaseTest
-import com.example.citysearch.City
 import com.example.citysearch.data.cache.AppLruCache
 import com.example.citysearch.data.localfile.FileDataSource
+import com.example.citysearch.domain.City
 import com.example.citysearch.domain.CityMapper
 import com.google.common.truth.Truth
 import io.mockk.coEvery

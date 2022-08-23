@@ -1,6 +1,5 @@
 package com.example.citysearch.data
 
-import com.example.citysearch.Coordinates
 
 data class CityDto(
     val country: String,

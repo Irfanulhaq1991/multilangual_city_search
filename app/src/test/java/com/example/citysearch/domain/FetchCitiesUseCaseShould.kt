@@ -1,7 +1,6 @@
 package com.example.citysearch.domain
 
 import com.example.citysearch.BaseTest
-import com.example.citysearch.City
 import com.example.citysearch.data.TestDataProviderProvider
 import com.example.citysearch.data.CitiesRepository
 import io.mockk.coEvery

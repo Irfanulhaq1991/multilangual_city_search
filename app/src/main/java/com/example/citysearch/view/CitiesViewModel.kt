@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.citysearch.City
+import com.example.citysearch.domain.City
 import com.example.citysearch.domain.FetchCitiesUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch

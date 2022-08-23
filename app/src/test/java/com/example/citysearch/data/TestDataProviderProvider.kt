@@ -1,7 +1,7 @@
 package com.example.citysearch.data
 
-import com.example.citysearch.City
 import com.example.citysearch.data.localfile.JsonDataProvider
+import com.example.citysearch.domain.City
 import com.example.citysearch.domain.CityMapper
 import java.text.Collator
 import java.util.*
