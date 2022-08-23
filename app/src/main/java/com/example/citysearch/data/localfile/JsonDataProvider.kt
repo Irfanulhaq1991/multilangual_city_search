@@ -1,23 +1,15 @@
 package com.example.citysearch.data.localfile
 
+import android.content.Context
 import com.example.citysearch.data.CityDto
 import com.google.gson.Gson
+import com.google.gson.JsonDeserializationContext
 import com.google.gson.reflect.TypeToken
 import java.io.FileInputStream
 
-open class JsonDataProvider {
-    private val ASSET_BASE_PATH = "../app/src/main/assets/"
+abstract class JsonDataProvider() {
 
-   open fun getJsonCitiesFromAssets(): String? {
-        val fileInputStream = FileInputStream(ASSET_BASE_PATH + "cities.json")
-        val size: Int = fileInputStream.available()
-        val buffer = ByteArray(size)
-        fileInputStream.read(buffer)
-        fileInputStream.close()
-        return String(buffer)
-
-
-    }
+   abstract fun getJsonCitiesFromAssets():String?
 
    open fun deSerializeAllCitiesJson(json: String): List<CityDto> {
         val typToken = object : TypeToken<List<CityDto>>() {}.type

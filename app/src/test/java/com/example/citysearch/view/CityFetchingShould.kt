@@ -52,10 +52,10 @@ class CityFetchingShould {
 
         }
 
-        val remoteDataSource = FileDataSource(fakeCitiesRemoteApi)
+        val dataSource = FileDataSource(fakeCitiesRemoteApi)
         val mapper = CityMapper()
         val appCache = AppLruCache<String, List<City>>()
-        val citiesRepository = CitiesRepository(remoteDataSource, appCache, mapper)
+        val citiesRepository = CitiesRepository(dataSource, appCache, mapper)
         val pager = Pager(pageSize)
         val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository, pager)
         val viewModel = CitiesViewModel(fetchCitiesUseCase)

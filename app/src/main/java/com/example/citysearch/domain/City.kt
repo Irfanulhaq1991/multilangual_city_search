@@ -8,11 +8,11 @@ data class City(
     val cityName: String,
     val cityCountry: String,
     val coordinates: Coordinates
-) {
+):Serializable {
 
     //formatting for UI as per domain requirements
     fun getCityCountryString(): String {
-        return "Coordinates: $cityName, $cityCountry";
+        return "$cityName, $cityCountry";
     }
 
 }
@@ -24,7 +24,7 @@ data class Coordinates(
 
     //formatting for UI as per the domain requirements
     fun getCoordinatesString(): String {
-        return "Coordinates: $longitude, $latitude";
+        return "$longitude, $latitude";
     }
 }
 

@@ -2,6 +2,7 @@ package com.example.citysearch.common
 
 import android.app.Application
 import com.example.citysearch.di.fetchCitiesModule
+import com.example.citysearch.di.fetchCitiesModuleWithContext
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -17,7 +18,7 @@ class App : Application() {
             //inject Android context
             androidContext(this@App)
             // use modules
-            modules(fetchCitiesModule)
+            modules(fetchCitiesModule, fetchCitiesModuleWithContext)
         }
     }
 

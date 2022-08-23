@@ -9,7 +9,7 @@ class FetchCitiesUseCase(private val citiesRepository: CitiesRepository, private
         val pageSize = pager.getPageSize()
 
         return citiesRepository
-            .fetchCities(currentPage, pageSize).also { }
+            .fetchCities(currentPage, pageSize)
             .map {
                 pager.totalCount = it.second
                 pager.currentPage = currentPage

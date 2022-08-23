@@ -6,17 +6,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.citysearch.domain.City
 import com.example.citysearch.domain.FetchCitiesUseCase
+import com.example.citysearch.domain.PAGE_STAY
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class CitiesViewModel(private val fetchCitiesUseCase: FetchCitiesUseCase) : ViewModel() {
     private val _citiesLiveData = MutableLiveData<CitiesUIState>()
-    val citiesLiveData: LiveData<CitiesUIState> = _citiesLiveData  // guarding the mutable live data available one for local mutation
+    val citiesLiveData: LiveData<CitiesUIState> =
+        _citiesLiveData  // guarding the mutable live data available one for local mutation
 
     private var fetchJob: Job? = null
 
     // cancel nay request mad previously proceed with new request
-    fun fetchCities(scrollDir: Int) {
+    fun fetchCities(scrollDir: Int = PAGE_STAY) {
         fetchJob?.cancel()
         proceed(scrollDir)
 
@@ -25,16 +27,15 @@ class CitiesViewModel(private val fetchCitiesUseCase: FetchCitiesUseCase) : View
     // request for fetching cities
     private fun proceed(scrollDir: Int) {
         fetchJob = viewModelScope.launch {
-            _citiesLiveData.value =  (_citiesLiveData.value?:CitiesUIState()).copy(loading = true)
+            _citiesLiveData.value = (_citiesLiveData.value ?: CitiesUIState()).copy(loading = true)
             fetchCitiesUseCase(scrollDir)
-                .run { reduceState(this)}
+                .run { reduceState(this) }
 
         }
     }
 
 
-
-   //  reduce the response to the UI state
+    //  reduce the response to the UI state
     private fun reduceState(result: Result<List<City>>) {
         result.fold({
 
@@ -49,7 +50,6 @@ class CitiesViewModel(private val fetchCitiesUseCase: FetchCitiesUseCase) : View
             )
         })
     }
-
 
 
     fun errorMessageShown() {

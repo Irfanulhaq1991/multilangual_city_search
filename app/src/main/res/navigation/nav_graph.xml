@@ -21,7 +21,7 @@
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" >
         <argument
-            android:name="coordinates"
-            app:argType="com.example.citysearch.domain.Coordinates" />
+            android:name="city"
+            app:argType="com.example.citysearch.domain.City" />
     </fragment>
 </navigation>
