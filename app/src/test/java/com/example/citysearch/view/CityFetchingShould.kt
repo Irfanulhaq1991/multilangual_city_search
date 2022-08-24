@@ -4,15 +4,18 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import com.example.citysearch.data.*
-import com.example.citysearch.data.cache.AppLruCache
+import com.example.citysearch.common.CoroutineTestRule
+import com.example.citysearch.data.CitiesRepository
+import com.example.citysearch.data.CityDto
+import com.example.citysearch.data.TestDataProviderProvider
 import com.example.citysearch.data.localfile.FileDataSource
 import com.example.citysearch.data.localfile.JsonDataProvider
-import com.example.citysearch.domain.*
+import com.example.citysearch.domain.City
+import com.example.citysearch.domain.CityMapper
+import com.example.citysearch.domain.FetchCitiesUseCase
 import com.example.citysearch.view.CitiesUIState
 import com.example.citysearch.view.CitiesViewModel
 import com.google.common.truth.Truth
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -30,44 +33,26 @@ class CityFetchingShould {
 
     private lateinit var uiController: CitySearchSpyUiController
 
-    private val pageSize = 2
-    private var dto = emptyList<CityDto>()
-    private var domain = emptyList<City>()
+    private var dtoModels = emptyList<CityDto>()
+    private var domainModels = emptyList<City>()
 
 
     @Before
     fun setup() {
-        dto = TestDataProviderProvider.provideDTOS()
-        domain = TestDataProviderProvider.provideDomainModels()
+        dtoModels = TestDataProviderProvider.provideDTOS()
+        domainModels = TestDataProviderProvider.provideDomainModels()
 
 
-        val fakeCitiesRemoteApi = object : JsonDataProvider() {
-            override fun getJsonCitiesFromAssets(): String? {
-                return "##"
-            }
-
-            override fun deSerializeAllCitiesJson(json: String): List<CityDto> {
-               return dto
-            }
-
-        }
+        val fakeCitiesRemoteApi = AcceptanceTestJsonProvider(dtoModels)
 
         val dataSource = FileDataSource(fakeCitiesRemoteApi)
         val mapper = CityMapper()
-        val appCache = AppLruCache<String, List<City>>()
-        val citiesRepository = CitiesRepository(dataSource, appCache, mapper)
-        val pager = Pager(pageSize)
-        val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository, pager)
+        val citiesRepository = CitiesRepository(dataSource, mapper)
+        val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository)
         val viewModel = CitiesViewModel(fetchCitiesUseCase)
         uiController = CitySearchSpyUiController().apply { this.viewModel = viewModel }
         uiController.onCreate()
 
-    }
-
-    @After
-    fun tearDown() {
-        dto = emptyList<CityDto>()
-        domain = emptyList<City>()
     }
 
     @Test
@@ -75,57 +60,15 @@ class CityFetchingShould {
         val expected = listOf(
             CitiesUIState(loading = true),
             CitiesUIState(loading = false,
-                cities = TestDataProviderProvider.sortDomainModels(domain)
-                    .subList(0, pageSize)
+                cities = TestDataProviderProvider.sortDomainModels(domainModels)
             )
         )
 
-        uiController.fetchCities(PAGE_STAY)
+        uiController.fetchCities()
         val actual = uiController.uiStates
 
         Truth.assertThat(actual).isEqualTo(expected)
     }
-
-
-    @Test
-    fun scrollInBoThDirections() {
-
-        //Given
-        var expected = listOf(
-            CitiesUIState(loading = true),
-            CitiesUIState(loading = false,
-                cities = TestDataProviderProvider.sortDomainModels(domain)
-                    .subList(0, pageSize)
-            ),
-            CitiesUIState(loading = true,
-                cities = TestDataProviderProvider.sortDomainModels(domain)
-                    .subList(0, pageSize)
-            ),
-            CitiesUIState(loading = false,
-                cities = TestDataProviderProvider.sortDomainModels(domain)
-                    .subList(pageSize, pageSize+pageSize)
-            ),
-            CitiesUIState(loading = true,
-                cities = TestDataProviderProvider.sortDomainModels(domain)
-                    .subList(pageSize, pageSize+pageSize)
-            ),
-            CitiesUIState(loading = false,
-                cities = TestDataProviderProvider.sortDomainModels(domain)
-                    .subList(0, pageSize)
-            )
-        )
-
-
-        //When
-        uiController.fetchCities(PAGE_STAY)
-        uiController.fetchCities(PAGE_FORWARD)
-        uiController.fetchCities(PAGE_BACKWARD)
-
-        //Then
-       val  actual = uiController.uiStates
-        Truth.assertThat(actual).isEqualTo(expected)
-    }
-
 
 }
 
@@ -153,10 +96,21 @@ class CitySearchSpyUiController : LifecycleOwner {
     }
 
 
-    fun fetchCities(scrollDir: Int) {
-        viewModel.fetchCities(scrollDir)
+    fun fetchCities() {
+        viewModel.fetchCities()
         countDownLatch.await(5000, TimeUnit.MILLISECONDS)
 
+    }
+
+}
+
+class AcceptanceTestJsonProvider(val dtoModels:List<CityDto>): JsonDataProvider() {
+    override fun getJsonCitiesFromAssets(): String? {
+        return "##"
+    }
+
+    override fun deSerializeAllCitiesJson(json: String): List<CityDto> {
+        return dtoModels
     }
 
 }

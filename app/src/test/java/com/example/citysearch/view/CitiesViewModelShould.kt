@@ -1,11 +1,10 @@
 package com.example.citysearch.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.citysearch.BaseTest
-import com.example.citysearch.CoroutineTestRule
+import com.example.citysearch.common.BaseTest
+import com.example.citysearch.common.CoroutineTestRule
 import com.example.citysearch.data.TestDataProviderProvider
 import com.example.citysearch.domain.FetchCitiesUseCase
-import com.example.citysearch.domain.PAGE_STAY
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
@@ -37,10 +36,10 @@ class CitiesViewModelShould: BaseTest(){
 
     @Test
     fun fetchCities() = runTest{
-        coEvery { fetchCitiesUseCase(PAGE_STAY) } answers { Result.success(TestDataProviderProvider.provideDomainModels()) }
+        coEvery { fetchCitiesUseCase() } answers { Result.success(TestDataProviderProvider.provideDomainModels()) }
 
-        viewModel.fetchCities(0)
-        coVerify { fetchCitiesUseCase(PAGE_STAY)}
+        viewModel.fetchCities()
+        coVerify { fetchCitiesUseCase()}
     }
 
 }

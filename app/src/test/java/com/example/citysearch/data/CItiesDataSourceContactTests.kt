@@ -1,6 +1,6 @@
 package com.example.citysearch.data
 
-import com.example.citysearch.BaseTest
+import com.example.citysearch.common.BaseTest
 import com.google.common.truth.Truth
 import kotlinx.coroutines.test.runTest
 import org.junit.Test

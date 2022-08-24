@@ -18,17 +18,17 @@ class CitiesViewModel(private val fetchCitiesUseCase: FetchCitiesUseCase) : View
     private var fetchJob: Job? = null
 
     // cancel nay request mad previously proceed with new request
-    fun fetchCities(scrollDir: Int = PAGE_STAY) {
+    fun fetchCities() {
         fetchJob?.cancel()
-        proceed(scrollDir)
+        proceed()
 
     }
 
     // request for fetching cities
-    private fun proceed(scrollDir: Int) {
+    private fun proceed() {
         fetchJob = viewModelScope.launch {
             _citiesLiveData.value = (_citiesLiveData.value ?: CitiesUIState()).copy(loading = true)
-            fetchCitiesUseCase(scrollDir)
+            fetchCitiesUseCase()
                 .run { reduceState(this) }
 
         }
