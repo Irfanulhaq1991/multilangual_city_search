@@ -26,8 +26,8 @@ class CitiesRepositoryShould : BaseTest() {
     private var totalCount = 0
 
     @Before
-    override fun setUp() {
-        super.setUp()
+    override fun setup() {
+        super.setup()
         val mapper = CityMapper()
         citiesRepository = CitiesRepository(dataSource,  mapper)
 

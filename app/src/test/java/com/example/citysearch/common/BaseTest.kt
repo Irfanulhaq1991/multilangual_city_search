@@ -4,7 +4,7 @@ import io.mockk.MockKAnnotations
 
 open class BaseTest {
 
-   open fun setUp() {
+   open fun setup() {
     MockKAnnotations.init(this, relaxUnitFun = true)
    }
 

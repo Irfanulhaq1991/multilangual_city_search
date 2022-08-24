@@ -9,12 +9,12 @@ import com.example.citysearch.fetching.data.CitiesRepository
 import com.example.citysearch.fetching.data.CityDto
 import com.example.citysearch.fetching.data.TestDataProviderProvider
 import com.example.citysearch.fetching.data.localfile.FileDataSource
-import com.example.citysearch.fetching.data.localfile.JsonDataProvider
 import com.example.citysearch.fetching.domain.City
 import com.example.citysearch.fetching.domain.CityMapper
 import com.example.citysearch.fetching.domain.FetchCitiesUseCase
 import com.example.citysearch.fetching.view.CitiesUIState
 import com.example.citysearch.fetching.view.CitiesViewModel
+import com.example.citysearch.searching.SearchCityUseCase
 import com.google.common.truth.Truth
 import org.junit.Before
 import org.junit.Rule
@@ -46,7 +46,8 @@ class CityFilteringShould {
         val mapper = CityMapper()
         val citiesRepository = CitiesRepository(dataSource, mapper)
         val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository)
-        val viewModel = CitiesViewModel(fetchCitiesUseCase)
+        val searchCityUseCase = SearchCityUseCase()
+        val viewModel = CitiesViewModel(fetchCitiesUseCase,searchCityUseCase)
 
 
 
@@ -56,10 +57,10 @@ class CityFilteringShould {
     }
 
     @Test
-    fun fetchCities() {
+    fun searchCity() {
         val expected = listOf(
-            CitiesUIState(loading = true),
-            CitiesUIState(loading = false,
+            CitiesUIState(
+                loading = false,
                 cities = TestDataProviderProvider.sortDomainModels(domainModels)
             )
         )
@@ -71,7 +72,6 @@ class CityFilteringShould {
     }
 
 }
-
 
 
 //https://blog.cleancoder.com/uncle-bob/2014/05/14/TheLittleMocker.html
@@ -89,17 +89,14 @@ class CitySearchSpyUiController : LifecycleOwner {
         registry.currentState = Lifecycle.State.STARTED
         viewModel.citiesLiveData.observe(this, {
             uiStates.add(it)
-            if (uiStates.size == 3) {
-                countDownLatch.countDown()
-            }
-        })
-    }
+            countDownLatch.countDown()
+    })
+}
 
 
-
-    fun search(query: String) {
-        viewModel.search(query)
-        countDownLatch.await(5000, TimeUnit.MILLISECONDS)
-    }
+fun search(query: String) {
+    viewModel.search(query)
+    countDownLatch.await(5000, TimeUnit.MILLISECONDS)
+}
 
 }

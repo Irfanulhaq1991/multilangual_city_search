@@ -22,8 +22,8 @@ class FetchCitiesUseCaseShould : BaseTest() {
     private var domainModels = emptyList<City>()
 
     @Before
-    override fun setUp() {
-        super.setUp()
+    override fun setup() {
+        super.setup()
         domainModels = TestDataProviderProvider.provideDomainModels()
         fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository)
     }

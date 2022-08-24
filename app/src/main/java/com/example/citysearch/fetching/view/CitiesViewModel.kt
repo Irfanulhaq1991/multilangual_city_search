@@ -6,10 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.citysearch.fetching.domain.City
 import com.example.citysearch.fetching.domain.FetchCitiesUseCase
+import com.example.citysearch.searching.SearchCityUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class CitiesViewModel(private val fetchCitiesUseCase: FetchCitiesUseCase) : ViewModel() {
+class CitiesViewModel(
+    private val fetchCitiesUseCase: FetchCitiesUseCase,
+    private val searchCityUseCase: SearchCityUseCase
+) : ViewModel() {
     private val _citiesLiveData = MutableLiveData<CitiesUIState>()
     val citiesLiveData: LiveData<CitiesUIState> =
         _citiesLiveData  // guarding the mutable live data available one for local mutation
@@ -52,16 +56,15 @@ class CitiesViewModel(private val fetchCitiesUseCase: FetchCitiesUseCase) : View
 
 
     fun search(query: String) {
-        TODO("Not yet implemented")
+        fetchJob = viewModelScope.launch {
+            searchCityUseCase()
+        }
     }
-
-
 
 
     fun errorMessageShown() {
         _citiesLiveData.value = _citiesLiveData.value!!.copy(errorMessage = null)
     }
-
 
 
 }

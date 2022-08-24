@@ -15,6 +15,7 @@ import com.example.citysearch.fetching.domain.CityMapper
 import com.example.citysearch.fetching.domain.FetchCitiesUseCase
 import com.example.citysearch.fetching.view.CitiesUIState
 import com.example.citysearch.fetching.view.CitiesViewModel
+import com.example.citysearch.searching.SearchCityUseCase
 import com.google.common.truth.Truth
 import org.junit.Before
 import org.junit.Rule
@@ -41,15 +42,14 @@ class CityFetchingShould {
     fun setup() {
         dtoModels = TestDataProviderProvider.provideDTOS()
         domainModels = TestDataProviderProvider.provideDomainModels()
-
-
         val fakeCitiesRemoteApi = AcceptanceTestJsonProvider(dtoModels)
-
         val dataSource = FileDataSource(fakeCitiesRemoteApi)
         val mapper = CityMapper()
         val citiesRepository = CitiesRepository(dataSource, mapper)
         val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository)
-        val viewModel = CitiesViewModel(fetchCitiesUseCase)
+        val searchCityUseCase = SearchCityUseCase()
+        val viewModel = CitiesViewModel(fetchCitiesUseCase,searchCityUseCase)
+
         uiController = CityFetchingSpyUiController().apply { this.viewModel = viewModel }
         uiController.onCreate()
 
@@ -89,7 +89,7 @@ class CityFetchingSpyUiController : LifecycleOwner {
         registry.currentState = Lifecycle.State.STARTED
         viewModel.citiesLiveData.observe(this, {
             uiStates.add(it)
-            if (uiStates.size == 3) {
+            if (uiStates.size == 2) {
                 countDownLatch.countDown()
             }
         })
