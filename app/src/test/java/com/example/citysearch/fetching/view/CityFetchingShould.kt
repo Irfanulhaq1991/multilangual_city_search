@@ -15,6 +15,7 @@ import com.example.citysearch.fetching.domain.CityMapper
 import com.example.citysearch.fetching.domain.FetchCitiesUseCase
 import com.example.citysearch.fetching.view.CitiesUIState
 import com.example.citysearch.fetching.view.CitiesViewModel
+import com.example.citysearch.searching.CitySearchRepository
 import com.example.citysearch.searching.SearchCityUseCase
 import com.google.common.truth.Truth
 import org.junit.Before
@@ -47,9 +48,11 @@ class CityFetchingShould {
         val mapper = CityMapper()
         val citiesRepository = CitiesRepository(dataSource, mapper)
         val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository)
-        val searchCityUseCase = SearchCityUseCase()
-        val viewModel = CitiesViewModel(fetchCitiesUseCase,searchCityUseCase)
 
+        val citySearchRepository = CitySearchRepository()
+        val searchCityUseCase = SearchCityUseCase(citySearchRepository)
+
+        val viewModel = CitiesViewModel(fetchCitiesUseCase,searchCityUseCase)
         uiController = CityFetchingSpyUiController().apply { this.viewModel = viewModel }
         uiController.onCreate()
 

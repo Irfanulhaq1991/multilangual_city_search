@@ -35,7 +35,8 @@ class ViewModelSearchShould :BaseTest(){
 
     @Test
     fun searchCity() = runTest {
-        viewModel.search("##")
-        coVerify { searchCityUseCase() }
+        val query = "##"
+        viewModel.search(query)
+        coVerify { searchCityUseCase(any()) }
     }
 }

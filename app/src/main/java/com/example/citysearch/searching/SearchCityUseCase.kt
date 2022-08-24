@@ -2,9 +2,9 @@ package com.example.citysearch.searching
 
 import com.example.citysearch.fetching.domain.City
 
-class SearchCityUseCase {
-    suspend operator fun invoke():Result<List<City>>{
-        TODO("Not yet implemented")
+class SearchCityUseCase(private val citySearchRepository: CitySearchRepository) {
+    suspend operator fun invoke (query: String):Result<List<City>>{
+        return citySearchRepository.search()
     }
 
 }

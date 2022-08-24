@@ -57,7 +57,7 @@ class CitiesViewModel(
 
     fun search(query: String) {
         fetchJob = viewModelScope.launch {
-            searchCityUseCase()
+            searchCityUseCase(query)
         }
     }
 
