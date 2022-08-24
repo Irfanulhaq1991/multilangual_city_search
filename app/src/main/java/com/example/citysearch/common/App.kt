@@ -1,8 +1,8 @@
 package com.example.citysearch.common
 
 import android.app.Application
-import com.example.citysearch.di.fetchCitiesModule
-import com.example.citysearch.di.fetchCitiesModuleWithContext
+import com.example.citysearch.fetching.di.fetchCitiesModule
+import com.example.citysearch.fetching.di.fetchCitiesModuleWithContext
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin

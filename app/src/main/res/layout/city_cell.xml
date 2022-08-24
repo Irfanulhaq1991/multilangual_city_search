@@ -7,7 +7,7 @@
 
         <variable
             name="city"
-            type="com.example.citysearch.domain.City" />
+            type="com.example.citysearch.fetching.domain.City" />
     </data>
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
