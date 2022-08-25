@@ -1,10 +1,9 @@
-package com.example.citysearch
+package com.example.citysearch.common
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import com.example.citysearch.common.CoroutineTestRule
 import com.example.citysearch.fetching.data.CitiesRepository
 import com.example.citysearch.fetching.data.CityDto
 import com.example.citysearch.fetching.data.TestDataProviderProvider
@@ -15,6 +14,7 @@ import com.example.citysearch.fetching.domain.CityMapper
 import com.example.citysearch.fetching.domain.FetchCitiesUseCase
 import com.example.citysearch.fetching.view.CitiesUIState
 import com.example.citysearch.fetching.view.CitiesViewModel
+import com.example.citysearch.searching.SimpleCache
 import com.example.citysearch.searching.CitySearchRepository
 import com.example.citysearch.searching.CitySearcher
 import com.example.citysearch.searching.SearchCityUseCase
@@ -22,7 +22,6 @@ import com.google.common.truth.Truth
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.kotlin.any
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -48,10 +47,12 @@ class CityFetchingShould {
         val fakeCitiesRemoteApi = AcceptanceTestJsonProvider(dtoModels)
         val dataSource = FileDataSource(fakeCitiesRemoteApi)
         val mapper = CityMapper()
-        val citiesRepository = CitiesRepository(dataSource, mapper)
+        val cache = SimpleCache<String,List<City>>(1)
+
+        val citiesRepository = CitiesRepository(dataSource, cache, mapper)
         val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository)
 
-        val citySearcher = CitySearcher()
+        val citySearcher = CitySearcher(cache)
         val citySearchRepository = CitySearchRepository(citySearcher)
         val searchCityUseCase = SearchCityUseCase(citySearchRepository)
 

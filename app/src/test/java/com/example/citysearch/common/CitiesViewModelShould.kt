@@ -1,8 +1,6 @@
-package com.example.citysearch
+package com.example.citysearch.common
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.citysearch.common.BaseTest
-import com.example.citysearch.common.CoroutineTestRule
 import com.example.citysearch.fetching.data.TestDataProviderProvider
 import com.example.citysearch.fetching.domain.FetchCitiesUseCase
 import com.example.citysearch.fetching.view.CitiesViewModel

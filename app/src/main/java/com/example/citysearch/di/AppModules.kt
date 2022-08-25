@@ -12,9 +12,7 @@ import com.example.citysearch.fetching.domain.CityMapper
 import com.example.citysearch.fetching.domain.FetchCitiesUseCase
 import com.example.citysearch.fetching.domain.IMapper
 import com.example.citysearch.fetching.view.CitiesViewModel
-import com.example.citysearch.searching.CitySearchRepository
-import com.example.citysearch.searching.CitySearcher
-import com.example.citysearch.searching.SearchCityUseCase
+import com.example.citysearch.searching.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -23,13 +21,14 @@ import org.koin.dsl.module
 val fetchCitiesModule = module {
     factory<IMapper<List<CityDto>, List<City>>> { CityMapper() }
     factory<ICitiesDataSource> { FileDataSource(get()) }
-    factory { CitiesRepository(get(), get()) }
+    factory { CitiesRepository(get(), get(), get()) }
     factory { FetchCitiesUseCase(get()) }
     viewModel { CitiesViewModel(get(), get()) }
 }
 
 val searchCityModule = module {
-    factory { CitySearcher() }
+    single<IAppCache<String, List<City>>> { SimpleCache(1) }
+    factory { CitySearcher(get()) }
     factory { CitySearchRepository(get()) }
     factory { SearchCityUseCase(get()) }
 }
