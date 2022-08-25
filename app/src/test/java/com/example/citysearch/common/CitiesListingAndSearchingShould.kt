@@ -9,6 +9,7 @@ import com.example.citysearch.fetching.data.CitiesRepository
 import com.example.citysearch.fetching.data.CityDto
 import com.example.citysearch.fetching.data.TestDataProviderProvider
 import com.example.citysearch.fetching.data.localfile.FileDataSource
+import com.example.citysearch.fetching.data.localfile.JsonDataProvider
 import com.example.citysearch.fetching.domain.City
 import com.example.citysearch.fetching.domain.CityMapper
 import com.example.citysearch.fetching.domain.FetchCitiesUseCase
@@ -21,10 +22,11 @@ import com.google.common.truth.Truth
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.any
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-class CityFilteringShould {
+class CityFetchingShould {
 
     @get:Rule
     val liveDataRule = InstantTaskExecutorRule()
@@ -33,7 +35,7 @@ class CityFilteringShould {
     val coroutineRul = CoroutineTestRule()
 
 
-    private lateinit var uiController: CitySearchSpyUiController
+    private lateinit var uiController: CityFetchingSpyUiController
 
     private var dtoModels = emptyList<CityDto>()
     private var domainModels = emptyList<City>()
@@ -54,11 +56,25 @@ class CityFilteringShould {
         val searchCityUseCase = SearchCityUseCase(citySearchRepository)
 
         val viewModel = CitiesViewModel(fetchCitiesUseCase,searchCityUseCase)
-        uiController = CitySearchSpyUiController().apply { this.viewModel = viewModel }
+        uiController = CityFetchingSpyUiController().apply { this.viewModel = viewModel }
         uiController.onCreate()
 
     }
 
+    @Test
+    fun fetchCities() {
+        val expected = listOf(
+            CitiesUIState(loading = true),
+            CitiesUIState(loading = false,
+                cities = TestDataProviderProvider.sortDomainModels(domainModels)
+            )
+        )
+
+        uiController.fetchCities()
+        val actual = uiController.uiStates
+
+        Truth.assertThat(actual).isEqualTo(expected)
+    }
     @Test
     fun searchCity() {
         val expected = listOf(
@@ -77,8 +93,9 @@ class CityFilteringShould {
 }
 
 
+
 //https://blog.cleancoder.com/uncle-bob/2014/05/14/TheLittleMocker.html
-class CitySearchSpyUiController : LifecycleOwner {
+class CityFetchingSpyUiController : LifecycleOwner {
 
     lateinit var viewModel: CitiesViewModel
     val uiStates = mutableListOf<CitiesUIState>() // Ui State list
@@ -92,14 +109,33 @@ class CitySearchSpyUiController : LifecycleOwner {
         registry.currentState = Lifecycle.State.STARTED
         viewModel.citiesLiveData.observe(this, {
             uiStates.add(it)
-            countDownLatch.countDown()
-    })
-}
+            if (uiStates.size == 2) {
+                countDownLatch.countDown()
+            }
+        })
+    }
 
 
-fun searchCity(query: String) {
-    viewModel.search(query)
-    countDownLatch.await(5000, TimeUnit.MILLISECONDS)
+    fun fetchCities() {
+        viewModel.fetchCities()
+        countDownLatch.await(1000, TimeUnit.MILLISECONDS)
+
+    }
+
+    fun searchCity(query: String) {
+        viewModel.search(query)
+        countDownLatch.await(5000, TimeUnit.MILLISECONDS)
+    }
+
 }
+
+class AcceptanceTestJsonProvider(val dtoModels:List<CityDto>): JsonDataProvider() {
+    override fun getJsonCitiesFromAssets(): String? {
+        return "##"
+    }
+
+    override fun deSerializeAllCitiesJson(json: String): List<CityDto> {
+        return dtoModels
+    }
 
 }

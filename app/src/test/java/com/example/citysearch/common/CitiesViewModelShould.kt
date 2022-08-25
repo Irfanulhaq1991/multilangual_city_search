@@ -1,10 +1,11 @@
-package com.example.citysearch.fetching.view
+package com.example.citysearch
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.citysearch.common.BaseTest
 import com.example.citysearch.common.CoroutineTestRule
 import com.example.citysearch.fetching.data.TestDataProviderProvider
 import com.example.citysearch.fetching.domain.FetchCitiesUseCase
+import com.example.citysearch.fetching.view.CitiesViewModel
 import com.example.citysearch.searching.SearchCityUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -16,7 +17,7 @@ import org.junit.Test
 
 
 
-class ViewModelFetchShould: BaseTest(){
+class CitiesViewModelShould: BaseTest(){
 
     @get:Rule
     val liveDataRule = InstantTaskExecutorRule()
@@ -45,4 +46,10 @@ class ViewModelFetchShould: BaseTest(){
         coVerify { fetchCitiesUseCase()}
     }
 
+    @Test
+    fun searchCity() = runTest {
+        val query = "##"
+        viewModel.search(query)
+        coVerify { searchCityUseCase(any()) }
+    }
 }
