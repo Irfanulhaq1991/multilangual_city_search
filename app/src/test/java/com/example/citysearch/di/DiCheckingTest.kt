@@ -18,6 +18,6 @@ class DiCheckingTest : KoinTest {
     // verify the Koin configuration
     @Test
     fun checkAllModules() = checkModules {
-        modules(fetchCitiesModule, fetchCitiesModuleForTesting)
+        modules(fetchCitiesModule, searchCityModule, fetchCitiesModuleForTesting)
     }
 }

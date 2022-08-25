@@ -20,8 +20,8 @@ class SearchCityUseCaseShould : BaseTest(){
     }
 
     @Test
-    fun search()= runTest{
+    fun searchCity()= runTest{
         searchCityUseCase.invoke("##")
-        coVerify { citySearchRepository.search() }
+        coVerify { citySearchRepository.searchCity(any()) }
     }
 }

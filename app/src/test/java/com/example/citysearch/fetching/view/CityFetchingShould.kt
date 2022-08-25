@@ -16,11 +16,13 @@ import com.example.citysearch.fetching.domain.FetchCitiesUseCase
 import com.example.citysearch.fetching.view.CitiesUIState
 import com.example.citysearch.fetching.view.CitiesViewModel
 import com.example.citysearch.searching.CitySearchRepository
+import com.example.citysearch.searching.CitySearcher
 import com.example.citysearch.searching.SearchCityUseCase
 import com.google.common.truth.Truth
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.any
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -49,7 +51,8 @@ class CityFetchingShould {
         val citiesRepository = CitiesRepository(dataSource, mapper)
         val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository)
 
-        val citySearchRepository = CitySearchRepository()
+        val citySearcher = CitySearcher()
+        val citySearchRepository = CitySearchRepository(citySearcher)
         val searchCityUseCase = SearchCityUseCase(citySearchRepository)
 
         val viewModel = CitiesViewModel(fetchCitiesUseCase,searchCityUseCase)

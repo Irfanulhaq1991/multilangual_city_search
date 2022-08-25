@@ -15,6 +15,7 @@ import com.example.citysearch.fetching.domain.FetchCitiesUseCase
 import com.example.citysearch.fetching.view.CitiesUIState
 import com.example.citysearch.fetching.view.CitiesViewModel
 import com.example.citysearch.searching.CitySearchRepository
+import com.example.citysearch.searching.CitySearcher
 import com.example.citysearch.searching.SearchCityUseCase
 import com.google.common.truth.Truth
 import org.junit.Before
@@ -48,7 +49,8 @@ class CityFilteringShould {
         val citiesRepository = CitiesRepository(dataSource, mapper)
         val fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository)
 
-        val citySearchRepository = CitySearchRepository()
+        val citySearcher = CitySearcher()
+        val citySearchRepository = CitySearchRepository(citySearcher)
         val searchCityUseCase = SearchCityUseCase(citySearchRepository)
 
         val viewModel = CitiesViewModel(fetchCitiesUseCase,searchCityUseCase)
@@ -66,7 +68,7 @@ class CityFilteringShould {
             )
         )
 
-        uiController.search("##")
+        uiController.searchCity("##")
         val actual = uiController.uiStates
 
         Truth.assertThat(actual).isEqualTo(expected)
@@ -95,7 +97,7 @@ class CitySearchSpyUiController : LifecycleOwner {
 }
 
 
-fun search(query: String) {
+fun searchCity(query: String) {
     viewModel.search(query)
     countDownLatch.await(5000, TimeUnit.MILLISECONDS)
 }
