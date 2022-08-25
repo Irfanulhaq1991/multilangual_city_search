@@ -23,12 +23,30 @@ class CitiesViewModel(
     // cancel nay request mad previously proceed with new request
     fun fetchCities() {
         fetchJob?.cancel()
-        proceed()
+        proceedFetchingCities()
 
     }
 
+
+    fun search(query: String) {
+        fetchJob = viewModelScope.launch {
+            searchCityUseCase(query).run { reduceState(this) }
+        }
+    }
+
+
+    fun errorMessageShown() {
+        _citiesLiveData.value = _citiesLiveData.value!!.copy(errorMessage = null)
+    }
+
+
+
+
+
+
+
     // request for fetching cities
-    private fun proceed() {
+    private fun proceedFetchingCities() {
         fetchJob = viewModelScope.launch {
             _citiesLiveData.value = (_citiesLiveData.value ?: CitiesUIState()).copy(loading = true)
             fetchCitiesUseCase()
@@ -37,34 +55,17 @@ class CitiesViewModel(
         }
     }
 
-
     //  reduce the response to the UI state
     private fun reduceState(result: Result<List<City>>) {
         result.fold({
 
-            _citiesLiveData.value = _citiesLiveData.value?.copy(
-                loading = false,
-                cities = it
-            )
+            _citiesLiveData.value = _citiesLiveData.value?.copy(loading = false, cities = it)
         }, {
-            _citiesLiveData.value = _citiesLiveData.value?.copy(
-                loading = false,
-                errorMessage = it.message!!
-            )
+            _citiesLiveData.value =
+                _citiesLiveData.value?.copy(loading = false, errorMessage = it.message!!)
         })
     }
 
-
-    fun search(query: String) {
-        fetchJob = viewModelScope.launch {
-            searchCityUseCase(query)
-        }
-    }
-
-
-    fun errorMessageShown() {
-        _citiesLiveData.value = _citiesLiveData.value!!.copy(errorMessage = null)
-    }
 
 
 }

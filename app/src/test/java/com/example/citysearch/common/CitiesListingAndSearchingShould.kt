@@ -85,7 +85,9 @@ class CityFetchingShould {
             )
         )
 
-        uiController.searchCity("##")
+        uiController.fetchCities()
+        uiController.clear()
+        uiController.searchCity(CITY_LIST_KEY)
         val actual = uiController.uiStates
 
         Truth.assertThat(actual).isEqualTo(expected)
@@ -126,6 +128,10 @@ class CityFetchingSpyUiController : LifecycleOwner {
     fun searchCity(query: String) {
         viewModel.search(query)
         countDownLatch.await(5000, TimeUnit.MILLISECONDS)
+    }
+
+    fun clear(){
+        uiStates.clear()
     }
 
 }
