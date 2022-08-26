@@ -3,7 +3,7 @@ package com.example.citysearch.common
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.citysearch.fetching.data.TestDataProviderProvider
 import com.example.citysearch.fetching.domain.FetchCitiesUseCase
-import com.example.citysearch.fetching.view.CitiesViewModel
+import com.example.citysearch.view.CitiesViewModel
 import com.example.citysearch.searching.SearchCityUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -46,6 +46,8 @@ class CitiesViewModelShould: BaseTest(){
 
     @Test
     fun searchCity() = runTest {
+        coEvery { searchCityUseCase(any()) } answers { Result.success(TestDataProviderProvider.provideDomainModels()) }
+
         val query = "##"
         viewModel.search(query)
         coVerify { searchCityUseCase(any()) }

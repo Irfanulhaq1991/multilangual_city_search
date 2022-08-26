@@ -12,13 +12,14 @@ import com.example.citysearch.fetching.data.localfile.JsonDataProvider
 import com.example.citysearch.fetching.domain.City
 import com.example.citysearch.fetching.domain.CityMapper
 import com.example.citysearch.fetching.domain.FetchCitiesUseCase
-import com.example.citysearch.fetching.view.CitiesUIState
-import com.example.citysearch.fetching.view.CitiesViewModel
+import com.example.citysearch.view.CitiesUIState
+import com.example.citysearch.view.CitiesViewModel
 import com.example.citysearch.searching.SimpleCache
 import com.example.citysearch.searching.CitySearchRepository
 import com.example.citysearch.searching.CitySearcher
 import com.example.citysearch.searching.SearchCityUseCase
 import com.google.common.truth.Truth
+import io.mockk.internalSubstitute
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -66,7 +67,9 @@ class CityFetchingShould {
     fun fetchCities() {
         val expected = listOf(
             CitiesUIState(loading = true),
-            CitiesUIState(loading = false,
+            CitiesUIState(
+                loading = false,
+                isUpdates = true,
                 cities = TestDataProviderProvider.sortDomainModels(domainModels)
             )
         )
@@ -81,6 +84,7 @@ class CityFetchingShould {
         val expected = listOf(
             CitiesUIState(
                 loading = false,
+                isUpdates = true,
                 cities = TestDataProviderProvider.sortDomainModels(domainModels)
             )
         )

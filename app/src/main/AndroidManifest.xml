@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CitySearch" >
         <activity
-            android:name="com.example.citysearch.fetching.view.MainActivity"
+            android:name="com.example.citysearch.view.MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

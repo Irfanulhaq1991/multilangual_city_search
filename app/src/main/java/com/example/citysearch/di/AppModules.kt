@@ -11,7 +11,7 @@ import com.example.citysearch.fetching.domain.City
 import com.example.citysearch.fetching.domain.CityMapper
 import com.example.citysearch.fetching.domain.FetchCitiesUseCase
 import com.example.citysearch.fetching.domain.IMapper
-import com.example.citysearch.fetching.view.CitiesViewModel
+import com.example.citysearch.view.CitiesViewModel
 import com.example.citysearch.searching.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
