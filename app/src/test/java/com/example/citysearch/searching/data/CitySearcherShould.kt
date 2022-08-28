@@ -42,14 +42,13 @@ class CitySearcherShould : BaseTest() {
         val data = TestDataProviderProvider.provideDomainModels().subList(0, 5)
         coEvery { cache[any()] } answers { data }
 
-        val queryResult = data[0]
-        val expected = Result.success(queryResult)
-
-        val actual = citySearcher.searchCity("Aberystwyth")
+        var actual = emptyList<City>()
+        citySearcher.searchCity("Ab")
+            .fold({ actual = it},{})
 
         Truth
             .assertThat(actual)
-            .isEqualTo(expected)
+            .hasSize(1)
     }
 
 }
