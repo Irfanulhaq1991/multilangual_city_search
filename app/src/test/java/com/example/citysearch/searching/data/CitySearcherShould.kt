@@ -1,11 +1,15 @@
 package com.example.citysearch.searching.data
 
 import com.example.citysearch.common.BaseTest
+import com.example.citysearch.common.TestDataProviderProvider
 import com.example.citysearch.fetching.domain.City
 import com.example.citysearch.searching.CitySearcher
 import com.example.citysearch.searching.SimpleCache
+import com.google.common.truth.Truth
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -24,9 +28,14 @@ class CitySearcherShould : BaseTest(){
     }
 
     @Test
-    fun fetchCities()= runTest{
-        citySearcher.searchCity("##")
-        coVerify { cache[any()] }
+    fun returnNoCity()= runTest{
+        coEvery { cache[any()] } answers {TestDataProviderProvider.provideDomainModels()}
+        val expected = emptyList<City>()
+        val actual = citySearcher.searchCity("##")
+
+        Truth
+            .assertThat(actual)
+            .isEqualTo(expected)
     }
 
 }
