@@ -27,7 +27,7 @@ class CitySearcher(private val cache: IAppCache<String, List<City>>) {
         val normalizedQuery = query.normalize()
         while (left <= right) {
             if (data[middle].cityName.substring(0, i) == normalizedQuery) {
-                val leftIndex = getLeftIndex()
+                val leftIndex = getLeftIndex(query,data,left,middle)
                 val rightIndex = getRight(query, data, right, middle)
 
                 return data.subList(leftIndex, rightIndex + 1)
@@ -60,11 +60,27 @@ class CitySearcher(private val cache: IAppCache<String, List<City>>) {
                 middle = (left + right) / 2
             }
         }
-        return middle
+        return right
     }
 
-    private fun getLeftIndex(): Int {
-        return 0
+    private fun getLeftIndex(query: String, data: List<City>, leftIndex: Int, mainMiddle: Int): Int {
+        var left = leftIndex
+        var right = mainMiddle - 1
+        var middle = (left + right) / 2
+        val i = query.length
+        if (mainMiddle == 0 ) return left
+        else if (data[mainMiddle - 1].cityName.substring(0, i) < query) {
+            return mainMiddle
+        } else {
+            while (left <= right) {
+                if (data[middle].cityName.substring(0, i) < query) {
+                    left = middle + 1
+                } else
+                    right = middle  - 1
+                middle = (left + right) / 2
+            }
+        }
+        return left
     }
 
 }

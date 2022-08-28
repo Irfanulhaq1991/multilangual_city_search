@@ -27,7 +27,7 @@ class CitySearcherShould : BaseTest() {
     }
 
     @Test
-    fun returnNoCity() = runTest {
+    fun returnNoCityOnShortQuery() = runTest {
         coEvery { cache[any()] } answers { TestDataProviderProvider.provideDomainModels() }
         val expected = Result.success(emptyList<City>())
         val actual = citySearcher.searchCity("##")
@@ -38,13 +38,13 @@ class CitySearcherShould : BaseTest() {
     }
 
     @Test
-    fun returnOneCity() {
+    fun returnOneCityOnExactQuery() {
         val data = TestDataProviderProvider.provideDomainModels().subList(0, 5)
         coEvery { cache[any()] } answers { data }
 
         var actual = emptyList<City>()
         citySearcher.searchCity("Aberystwyth")
-            .fold({ actual = it},{})
+            .fold({ actual = it }, {})
 
         Truth
             .assertThat(actual)
@@ -56,17 +56,47 @@ class CitySearcherShould : BaseTest() {
 
 
     @Test
-    fun returnManyCities() {
+    fun returnManyCitiesPrefixedA() {
         val data = TestDataProviderProvider.provideDomainModels()
         coEvery { cache[any()] } answers { data }
 
         var actual = emptyList<City>()
         citySearcher.searchCity("A")
-            .fold({ actual = it},{})
+            .fold({ actual = it }, {})
 
         Truth
             .assertThat(actual)
             .hasSize(34)
     }
+
+    @Test
+    fun returnManyCitiesPrefixedB() {
+        val data = TestDataProviderProvider.provideDomainModels()
+        coEvery { cache[any()] } answers { data }
+
+        var actual = emptyList<City>()
+        citySearcher.searchCity("B")
+            .fold({ actual = it }, {})
+
+        Truth
+            .assertThat(actual)
+            .hasSize(67)
+    }
+
+
+    @Test
+    fun returnManyCitiesPrefixedC() {
+        val data = TestDataProviderProvider.provideDomainModels()
+        coEvery { cache[any()] } answers { data }
+
+        var actual = emptyList<City>()
+        citySearcher.searchCity("C")
+            .fold({ actual = it }, {})
+
+        Truth
+            .assertThat(actual)
+            .hasSize(74)
+    }
+
 
 }
