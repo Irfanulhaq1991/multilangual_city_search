@@ -38,6 +38,17 @@ class CitySearcherShould : BaseTest() {
     }
 
     @Test
+    fun returnNoCityOnLongQuery(){
+        coEvery { cache[any()] } answers { TestDataProviderProvider.provideDomainModels() }
+        val expected = Result.success(emptyList<City>())
+        val actual = citySearcher.searchCity("Abbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+
+        Truth
+            .assertThat(actual)
+            .isEqualTo(expected)
+    }
+
+    @Test
     fun returnOneCityOnExactQuery() {
         val data = TestDataProviderProvider.provideDomainModels().subList(0, 5)
         coEvery { cache[any()] } answers { data }
