@@ -14,7 +14,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
-class CitySearcherShould : BaseTest(){
+class CitySearcherShould : BaseTest() {
 
     @RelaxedMockK
     private lateinit var cache: SimpleCache<String, List<City>>
@@ -27,10 +27,25 @@ class CitySearcherShould : BaseTest(){
     }
 
     @Test
-    fun returnNoCity()= runTest{
-        coEvery { cache[any()] } answers {TestDataProviderProvider.provideDomainModels()}
+    fun returnNoCity() = runTest {
+        coEvery { cache[any()] } answers { TestDataProviderProvider.provideDomainModels() }
         val expected = Result.success(emptyList<City>())
         val actual = citySearcher.searchCity("##")
+
+        Truth
+            .assertThat(actual)
+            .isEqualTo(expected)
+    }
+
+    @Test
+    fun returnOneCity() {
+        val data = TestDataProviderProvider.provideDomainModels().subList(0, 5)
+        coEvery { cache[any()] } answers { data }
+
+        val queryResult = data[0]
+        val expected = Result.success(queryResult)
+
+        val actual = citySearcher.searchCity("Aberystwyth")
 
         Truth
             .assertThat(actual)
