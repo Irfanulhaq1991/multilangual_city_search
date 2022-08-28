@@ -51,4 +51,19 @@ class CitySearcherShould : BaseTest() {
             .hasSize(1)
     }
 
+
+    @Test
+    fun returnManyCities() {
+        val data = TestDataProviderProvider.provideDomainModels().subList(0, 5)
+        coEvery { cache[any()] } answers { data }
+
+        var actual = emptyList<City>()
+        citySearcher.searchCity("A")
+            .fold({ actual = it},{})
+
+        Truth
+            .assertThat(actual)
+            .hasSize(5)
+    }
+
 }
