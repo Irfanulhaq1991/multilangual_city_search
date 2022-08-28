@@ -12,7 +12,7 @@ object TestDataProviderProvider : JsonDataProvider() {
 
 
     fun provideDTOS(): List<CityDto> {
-        return deSerializeAllCitiesJson(getJsonCitiesFromAssets())//.subList(0, 500)
+        return deSerializeAllCitiesJson(getJsonCitiesFromAssets()).subList(0, 500)
     }
 
     fun provideDomainModels(): List<City> {
