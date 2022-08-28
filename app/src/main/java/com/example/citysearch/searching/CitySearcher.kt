@@ -23,11 +23,15 @@ class CitySearcher(private val cache: IAppCache<String, List<City>>) {
         var left = 0
         var right = data.size - 1
         var middle = (left + right) / 2
-        val i = query.length
+        var querLength = query.length
+        var i = querLength
         val normalizedQuery = query.normalize()
+
         while (left <= right) {
+            if (i > data[middle].cityName.length)
+                i = data[middle].cityName.length
             if (data[middle].cityName.substring(0, i) == normalizedQuery) {
-                val leftIndex = getLeftIndex(query,data,left,middle)
+                val leftIndex = getLeftIndex(query, data, left, middle)
                 val rightIndex = getRight(query, data, right, middle)
 
                 return data.subList(leftIndex, rightIndex + 1)
@@ -39,6 +43,7 @@ class CitySearcher(private val cache: IAppCache<String, List<City>>) {
                 right = middle - 1
             }
             middle = (left + right) / 2
+            i = normalizedQuery.length
         }
         return emptyList()
     }
@@ -63,12 +68,17 @@ class CitySearcher(private val cache: IAppCache<String, List<City>>) {
         return right
     }
 
-    private fun getLeftIndex(query: String, data: List<City>, leftIndex: Int, mainMiddle: Int): Int {
+    private fun getLeftIndex(
+        query: String,
+        data: List<City>,
+        leftIndex: Int,
+        mainMiddle: Int
+    ): Int {
         var left = leftIndex
         var right = mainMiddle - 1
         var middle = (left + right) / 2
         val i = query.length
-        if (mainMiddle == 0 ) return left
+        if (mainMiddle == 0) return left
         else if (data[mainMiddle - 1].cityName.substring(0, i) < query) {
             return mainMiddle
         } else {
@@ -76,7 +86,7 @@ class CitySearcher(private val cache: IAppCache<String, List<City>>) {
                 if (data[middle].cityName.substring(0, i) < query) {
                     left = middle + 1
                 } else
-                    right = middle  - 1
+                    right = middle - 1
                 middle = (left + right) / 2
             }
         }
