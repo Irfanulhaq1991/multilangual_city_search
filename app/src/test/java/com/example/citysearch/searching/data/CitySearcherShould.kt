@@ -16,7 +16,6 @@ import org.junit.Test
 
 class CitySearcherShould : BaseTest(){
 
-
     @RelaxedMockK
     private lateinit var cache: SimpleCache<String, List<City>>
     private lateinit var citySearcher: CitySearcher
@@ -30,7 +29,7 @@ class CitySearcherShould : BaseTest(){
     @Test
     fun returnNoCity()= runTest{
         coEvery { cache[any()] } answers {TestDataProviderProvider.provideDomainModels()}
-        val expected = emptyList<City>()
+        val expected = Result.success(emptyList<City>())
         val actual = citySearcher.searchCity("##")
 
         Truth
