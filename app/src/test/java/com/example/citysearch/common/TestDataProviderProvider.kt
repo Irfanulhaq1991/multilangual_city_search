@@ -1,5 +1,6 @@
-package com.example.citysearch.fetching.data
+package com.example.citysearch.common
 
+import com.example.citysearch.fetching.data.CityDto
 import com.example.citysearch.fetching.data.localfile.JsonDataProvider
 import com.example.citysearch.fetching.domain.City
 import com.example.citysearch.fetching.domain.CityMapper
@@ -11,7 +12,7 @@ object TestDataProviderProvider : JsonDataProvider() {
 
 
     fun provideDTOS(): List<CityDto> {
-        return deSerializeAllCitiesJson(getJsonCitiesFromAssets()).subList(0, 500)
+        return deSerializeAllCitiesJson(getJsonCitiesFromAssets())//.subList(0, 500)
     }
 
     fun provideDomainModels(): List<City> {

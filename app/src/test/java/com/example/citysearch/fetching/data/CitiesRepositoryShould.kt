@@ -1,7 +1,7 @@
 package com.example.citysearch.fetching.data
 
 import com.example.citysearch.common.BaseTest
-import com.example.citysearch.common.CITY_LIST_KEY
+import com.example.citysearch.common.TestDataProviderProvider
 import com.example.citysearch.fetching.data.localfile.FileDataSource
 import com.example.citysearch.fetching.domain.City
 import com.example.citysearch.fetching.domain.CityMapper

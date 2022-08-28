@@ -6,7 +6,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import com.example.citysearch.fetching.data.CitiesRepository
 import com.example.citysearch.fetching.data.CityDto
-import com.example.citysearch.fetching.data.TestDataProviderProvider
 import com.example.citysearch.fetching.data.localfile.FileDataSource
 import com.example.citysearch.fetching.data.localfile.JsonDataProvider
 import com.example.citysearch.fetching.domain.City
@@ -19,7 +18,6 @@ import com.example.citysearch.searching.CitySearchRepository
 import com.example.citysearch.searching.CitySearcher
 import com.example.citysearch.searching.SearchCityUseCase
 import com.google.common.truth.Truth
-import io.mockk.internalSubstitute
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
