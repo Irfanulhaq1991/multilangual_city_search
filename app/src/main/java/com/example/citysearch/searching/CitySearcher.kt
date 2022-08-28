@@ -23,15 +23,14 @@ class CitySearcher(private val cache: IAppCache<String, List<City>>) {
         var left = 0
         var right = data.size - 1
         var middle = (left + right) / 2
-        val result = mutableListOf<City>()
         val i = query.length
         val normalizedQuery = query.normalize()
         while (left <= right) {
-            if (data[middle].cityName.contains(normalizedQuery)) {
-                val left = getLeftIndex()
-                val rightIndex = getRight()
+            if (data[middle].cityName.substring(0, i) == normalizedQuery) {
+                val leftIndex = getLeftIndex()
+                val rightIndex = getRight(query, data, right, middle)
 
-                return data.subList(left,rightIndex+1)
+                return data.subList(leftIndex, rightIndex + 1)
             }
             if (normalizedQuery > data[middle].cityName.substring(0, i)) {
                 left = middle + 1
@@ -44,11 +43,27 @@ class CitySearcher(private val cache: IAppCache<String, List<City>>) {
         return emptyList()
     }
 
-    private fun getRight(): Int {
-         return 4
+    private fun getRight(query: String, data: List<City>, rightIndex: Int, mainMiddle: Int): Int {
+        var right = rightIndex
+        var left = mainMiddle + 1
+        var middle = (left + right) / 2
+        val i = query.length
+        if (mainMiddle == data.size - 1) return right
+        else if (data[mainMiddle + 1].cityName.substring(0, i) > query) {
+            return mainMiddle
+        } else {
+            while (left <= right) {
+                if (data[middle].cityName.substring(0, i) > query) {
+                    right = middle - 1
+                } else
+                    left = middle + 1
+                middle = (left + right) / 2
+            }
+        }
+        return middle
     }
 
-    private fun getLeftIndex():Int{
+    private fun getLeftIndex(): Int {
         return 0
     }
 

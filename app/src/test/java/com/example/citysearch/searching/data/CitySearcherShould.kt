@@ -43,18 +43,21 @@ class CitySearcherShould : BaseTest() {
         coEvery { cache[any()] } answers { data }
 
         var actual = emptyList<City>()
-        citySearcher.searchCity("Ab")
+        citySearcher.searchCity("Aberystwyth")
             .fold({ actual = it},{})
 
         Truth
             .assertThat(actual)
             .hasSize(1)
+        Truth
+            .assertThat(actual[0].cityName)
+            .isEqualTo("Aberystwyth")
     }
 
 
     @Test
     fun returnManyCities() {
-        val data = TestDataProviderProvider.provideDomainModels().subList(0, 5)
+        val data = TestDataProviderProvider.provideDomainModels()
         coEvery { cache[any()] } answers { data }
 
         var actual = emptyList<City>()
@@ -63,7 +66,7 @@ class CitySearcherShould : BaseTest() {
 
         Truth
             .assertThat(actual)
-            .hasSize(5)
+            .hasSize(34)
     }
 
 }
