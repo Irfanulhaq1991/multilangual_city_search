@@ -3,6 +3,10 @@ package com.example.citysearch.fetching.data.localfile
 import com.example.citysearch.fetching.data.CityDto
 import com.example.citysearch.fetching.data.ICitiesDataSource
 
+
+/**
+ * Provide data from JsonFile
+ */
 class FileDataSource(private val jsonSourceProvider: JsonDataProvider): ICitiesDataSource {
     override suspend fun fetchCities(): Result<List<CityDto>> {
         return try {

@@ -5,7 +5,14 @@ import com.example.citysearch.fetching.domain.City
 import com.example.citysearch.fetching.domain.mapper.normalize
 
 
+
+
 class CitySearcher(private val cache: IAppCache<String, List<City>>) : ICitySearcher {
+
+
+    /**
+     * Get data from [IAppCache] and  filter the data based on the input string
+     */
     override fun searchCity(query: String): Result<List<City>> {
         return try {
             val cachedData = cache[CITY_LIST_KEY]
@@ -16,7 +23,9 @@ class CitySearcher(private val cache: IAppCache<String, List<City>>) : ICitySear
         }
     }
 
-
+    /**
+     * filter the provide data based on the input string
+     */
     private fun doSearch(query: String, data: List<City>): List<City> {
         var left = 0
         var right = data.size - 1
@@ -44,6 +53,9 @@ class CitySearcher(private val cache: IAppCache<String, List<City>>) : ICitySear
     }
 
 
+    /**
+     * Ge the range of the similar item matched with input string
+     */
     private fun getRangeOf(
         data: List<City>,
         query: String,
@@ -58,6 +70,9 @@ class CitySearcher(private val cache: IAppCache<String, List<City>>) : ICitySear
         return data.subList(leftBound, rightBound + 1)
     }
 
+    /**
+     * Get right bound of the range
+     */
     private fun getRight(query: String, data: List<City>, rightIndex: Int, mainMiddle: Int): Int {
 
 
@@ -79,6 +94,9 @@ class CitySearcher(private val cache: IAppCache<String, List<City>>) : ICitySear
         return rightBound
     }
 
+    /**
+     * Get left bound of the range
+     */
     private fun getLeft(
         query: String,
         data: List<City>,
@@ -104,7 +122,9 @@ class CitySearcher(private val cache: IAppCache<String, List<City>>) : ICitySear
         return leftBound
     }
 
-
+    /**
+     * Reduce the input string if greater than the one in the list
+     */
     private fun reduce(first: String, second: String): Int {
         return if (first.length < second.length) first.length else second.length
     }

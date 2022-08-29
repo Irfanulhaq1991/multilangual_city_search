@@ -8,7 +8,7 @@ import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 import kotlin.coroutines.ContinuationInterceptor
 
-// coroutine test rul
+/** coroutine test rul */
 class CoroutineTestRule:TestWatcher() {
     private val dispatcher = UnconfinedTestDispatcher()
 

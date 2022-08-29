@@ -2,6 +2,10 @@ package com.example.citysearch.searching.data
 
 import java.lang.IllegalStateException
 
+
+/**
+ * Implementation of  [IAppCache] to cache data in [HashMap]
+ */
 class SimpleCache<K,V>(private val size:Int) : IAppCache<K, V> {
     private val cache = HashMap<K,V>(size)
 

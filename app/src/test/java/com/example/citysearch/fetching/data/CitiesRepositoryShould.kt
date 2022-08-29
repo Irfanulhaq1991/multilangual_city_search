@@ -37,7 +37,7 @@ class CitiesRepositoryShould : BaseTest() {
         val mapper = CityMapper()
         citiesRepository = CitiesRepository(dataSource, cache, mapper)
 
-        testDto = TestDataProviderProvider.provideDOSFromBeginning()
+        testDto = TestDataProviderProvider.provideDtoFromBeginning()
         testDomain = TestDataProviderProvider.provideDomainModelsFromBeginning()
         totalCount = testDomain.size
     }

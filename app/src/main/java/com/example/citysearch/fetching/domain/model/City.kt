@@ -2,7 +2,9 @@ package com.example.citysearch.fetching.domain
 
 import java.io.Serializable
 
-// City Domain Entity
+/**
+ * Domain Root aggregate
+ * */
 data class City(
     val id: Int,
     val cityName: String,
@@ -10,19 +12,26 @@ data class City(
     val coordinates: Coordinates
 ):Serializable {
 
-    //formatting for UI as per domain requirements
+    /**
+     * Format [cityName] and [cityCountry]for UI as per domain requirements
+     * */
     fun getCityCountryString(): String {
         return "$cityName, $cityCountry";
     }
 
 }
 
+/**
+ * Domain value model
+ * */
 data class Coordinates(
     val longitude: Double,
     val latitude: Double
 ) : Serializable {
 
-    //formatting for UI as per the domain requirements
+    /**
+     * Format  latitude and longitude for UI as per the domain requirements
+     * */
     fun getCoordinatesString(): String {
         return "$longitude, $latitude";
     }

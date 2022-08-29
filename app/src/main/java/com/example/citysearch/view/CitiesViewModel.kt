@@ -16,12 +16,12 @@ class CitiesViewModel(
 ) : ViewModel() {
     private val _citiesLiveData = MutableLiveData<CitiesUIState>()
 
-    // guarding the mutable live data available one for local mutation
+    /** guarding the mutable live data available one for local mutation*/
     val citiesLiveData: LiveData<CitiesUIState> = _citiesLiveData
 
     private var job: Job? = null
 
-    // cancel nay request mad previously proceed with new request
+    /** cancel nay request mad previously proceed with new request */
     fun fetchCities() {
         job?.cancel()
         job = proceedFetchingCities()
@@ -35,14 +35,14 @@ class CitiesViewModel(
         }
     }
 
-    // After ui is updated
+    /** After ui is updated */
     fun stateRendered() {
         _citiesLiveData.value = _citiesLiveData.value!!.copy(errorMessage = null,isUpdates = false)
     }
 
 
 
-    // request for fetching cities
+    /** request for fetching cities*/
     private fun proceedFetchingCities(): Job {
         return viewModelScope.launch {
             _citiesLiveData.value = (_citiesLiveData.value ?: CitiesUIState()).copy(loading = true)
@@ -52,7 +52,7 @@ class CitiesViewModel(
         }
     }
 
-    //  reduce the response to the UI state
+    /** reduce the response to the UI state*/
     private fun reduceState(result: Result<List<City>>) {
         result.fold({
 

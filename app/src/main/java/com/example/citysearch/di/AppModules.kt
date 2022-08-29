@@ -20,7 +20,9 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-
+/**
+ * Module for Koin dependency injection
+ * */
 val fetchCitiesModule = module {
     factory<IMapper<List<CityDto>, List<City>>> { CityMapper() }
     factory<ICitiesDataSource> { FileDataSource(get()) }

@@ -7,6 +7,7 @@ import java.text.Collator
 import java.text.Normalizer
 import java.util.*
 
+/** Convert data transfer objects to domain models*/
 class CityMapper : IMapper<List<CityDto>, List<City>> {
     override fun map(cities: List<CityDto>): List<City> {
         val mappedResult = cities.map {
@@ -19,7 +20,9 @@ class CityMapper : IMapper<List<CityDto>, List<City>> {
     }
 
 
-    // Applying Business rule
+    /** Sort the data domain models according to UK localised [Collator]
+     * which will later helps in better run time searching
+     **/
     private fun sortingRule(cities: List<City>): List<City> {
         val usCollator: Collator = Collator.getInstance(Locale.UK)
         usCollator.strength = Collator.PRIMARY
@@ -31,9 +34,13 @@ class CityMapper : IMapper<List<CityDto>, List<City>> {
 private val REGEX_UN_ACCENT = "\\p{M}|\\p{M}".toRegex()
 private val REGEX_QUOTATION_MARK_BRACKET = "[`'’‘-]|[()]".toRegex()
 
-// string normalization for easy sorting and searching
-// https://docs.oracle.com/javase/tutorial/i18n/text/normalizerapi.html
-//https://docs.oracle.com/cd/B19306_01/server.102/b14225/ch5lingsort.htm#i1008198
+
+
+/**
+ * Normalise string for easy sorting and searching
+ *  to get more sense of this method visit https://docs.oracle.com/javase/tutorial/i18n/text/normalizerapi.html
+ * and https://docs.oracle.com/cd/B19306_01/server.102/b14225/ch5lingsort.htm#i1008198
+ * */
 fun String.normalize():String{
     val normalizerName = Normalizer.normalize(this, Normalizer.Form.NFD)
 

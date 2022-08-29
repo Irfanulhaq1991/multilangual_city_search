@@ -42,7 +42,7 @@ class CityFetchingShould {
 
     @Before
     fun setup() {
-        dtoModels = TestDataProviderProvider.provideDOSFromBeginning()
+        dtoModels = TestDataProviderProvider.provideDtoFromBeginning()
         domainModels = TestDataProviderProvider.provideDomainModelsFromBeginning()
         val fakeCitiesRemoteApi = AcceptanceTestJsonProvider(dtoModels)
         val dataSource = FileDataSource(fakeCitiesRemoteApi)
