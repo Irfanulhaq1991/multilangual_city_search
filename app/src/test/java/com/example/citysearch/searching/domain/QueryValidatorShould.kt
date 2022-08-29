@@ -2,9 +2,9 @@ package com.example.citysearch.searching.domain
 
 import com.example.citysearch.common.BaseTest
 import com.google.common.truth.Truth
-import junit.framework.TestCase
 import org.junit.Before
 import org.junit.Test
+
 import org.mockito.kotlin.any
 
 class QueryValidatorShould : BaseTest(){
@@ -52,20 +52,6 @@ class QueryValidatorShould : BaseTest(){
     fun validateInvalidQuery5(){
         Truth
             .assertThat(queryValidator.validate("Hello%+"))
-            .isFalse()
-    }
-
-    @Test
-    fun validateInvalidQuery6(){
-        Truth
-            .assertThat(queryValidator.validate(" "))
-            .isFalse()
-    }
-
-    @Test
-    fun validateInvalidQuery7(){
-        Truth
-            .assertThat(queryValidator.validate("  "))
             .isFalse()
     }
 
