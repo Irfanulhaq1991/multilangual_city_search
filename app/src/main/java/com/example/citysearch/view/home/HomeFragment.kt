@@ -18,6 +18,7 @@ import com.example.citysearch.view.CitiesUIState
 import com.example.citysearch.view.CitiesViewModel
 import com.example.citysearch.view.ItemLayoutManger
 import com.example.citysearch.view.RcAdaptor
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment(), Observer<CitiesUIState>, ItemLayoutManger<City> {
@@ -43,7 +44,7 @@ class HomeFragment : Fragment(), Observer<CitiesUIState>, ItemLayoutManger<City>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.citiesLiveData.apply{ adaptor }
+        viewModel.citiesLiveData.apply { adaptor }
             .observe(viewLifecycleOwner, this)
 
         binding.searchView.doOnTextChanged { query, _, _, _ ->
@@ -86,7 +87,10 @@ class HomeFragment : Fragment(), Observer<CitiesUIState>, ItemLayoutManger<City>
 
 
     private fun showErrorMessage(message: String?) {
-        message?.let { Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show() }
+        message?.let {
+            Snackbar.make(requireContext(), binding.root, it, Snackbar.LENGTH_SHORT).show()
+        }
+
     }
 
     private fun stateRendered(state: CitiesUIState) {
