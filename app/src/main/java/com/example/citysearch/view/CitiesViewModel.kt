@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.citysearch.fetching.domain.City
 import com.example.citysearch.fetching.domain.FetchCitiesUseCase
-import com.example.citysearch.searching.SearchCityUseCase
+import com.example.citysearch.searching.domain.SearchCityUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 

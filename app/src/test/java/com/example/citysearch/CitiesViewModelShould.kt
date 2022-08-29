@@ -6,7 +6,7 @@ import com.example.citysearch.common.CoroutineTestRule
 import com.example.citysearch.common.TestDataProviderProvider
 import com.example.citysearch.fetching.domain.FetchCitiesUseCase
 import com.example.citysearch.view.CitiesViewModel
-import com.example.citysearch.searching.SearchCityUseCase
+import com.example.citysearch.searching.domain.SearchCityUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK

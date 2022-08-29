@@ -2,8 +2,8 @@ package com.example.citysearch.fetching.data
 
 import com.example.citysearch.common.CITY_LIST_KEY
 import com.example.citysearch.fetching.domain.City
-import com.example.citysearch.fetching.domain.IMapper
-import com.example.citysearch.searching.IAppCache
+import com.example.citysearch.fetching.domain.mapper.IMapper
+import com.example.citysearch.searching.data.IAppCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

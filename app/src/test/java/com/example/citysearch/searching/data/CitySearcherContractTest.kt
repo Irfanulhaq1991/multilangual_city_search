@@ -3,12 +3,7 @@ package com.example.citysearch.searching.data
 import com.example.citysearch.common.BaseTest
 import com.example.citysearch.common.TestDataProviderProvider
 import com.example.citysearch.fetching.domain.City
-import com.example.citysearch.searching.CitySearcher
-import com.example.citysearch.searching.ICitySearcher
-import com.example.citysearch.searching.SimpleCache
 import com.google.common.truth.Truth
-import io.mockk.coEvery
-import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test

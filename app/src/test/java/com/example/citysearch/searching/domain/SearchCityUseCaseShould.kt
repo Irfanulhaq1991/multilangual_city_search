@@ -1,8 +1,7 @@
 package com.example.citysearch.searching.domain
 
 import com.example.citysearch.common.BaseTest
-import com.example.citysearch.searching.CitySearchRepository
-import com.example.citysearch.searching.SearchCityUseCase
+import com.example.citysearch.searching.data.CitySearchRepository
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.test.runTest

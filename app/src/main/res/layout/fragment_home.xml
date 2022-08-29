@@ -17,19 +17,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="5dp"
-        tools:context=".view.HomeFragment">
+        tools:context=".view.home.HomeFragment">
 
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/search_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Query"
-            android:background="@drawable/ed_bg"
+            android:hint="@string/search"
+            style="@style/Theme.input"
             android:paddingLeft="20dp"
             android:paddingBottom="15dp"
             android:paddingTop="15dp"
-
+            android:maxLines="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/search_view"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

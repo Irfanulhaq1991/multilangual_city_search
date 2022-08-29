@@ -3,7 +3,7 @@ package com.example.citysearch.common
 import com.example.citysearch.fetching.data.CityDto
 import com.example.citysearch.fetching.data.localfile.JsonDataProvider
 import com.example.citysearch.fetching.domain.City
-import com.example.citysearch.fetching.domain.CityMapper
+import com.example.citysearch.fetching.domain.mapper.CityMapper
 import java.io.FileInputStream
 import java.text.Collator
 import java.util.*
