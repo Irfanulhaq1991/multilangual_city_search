@@ -25,8 +25,24 @@ class CitySearcherShould : BaseTest() {
     }
 
     @Test
-    fun returnNoCity1() = runTest {
-        coEvery { cache[any()] } answers { TestDataProviderProvider.provideDomainModelsFromBeginning() }
+    fun returnOriginalOnEmpty() = runTest {
+        val data = TestDataProviderProvider
+            .sortDomainModels(TestDataProviderProvider.provideDomainModelsFromBeginning())
+        coEvery { cache[any()] } answers { data }
+        val expected = Result.success(data)
+        val actual = citySearcher.searchCity("")
+
+        Truth
+            .assertThat(actual)
+            .isEqualTo(expected)
+    }
+
+
+    @Test
+    fun returnNoCityOnInvalid() = runTest {
+        val data = TestDataProviderProvider
+            .sortDomainModels(TestDataProviderProvider.provideDomainModelsFromBeginning())
+        coEvery { cache[any()] } answers { data }
         val expected = Result.success(emptyList<City>())
         val actual = citySearcher.searchCity("##")
 
@@ -38,8 +54,10 @@ class CitySearcherShould : BaseTest() {
 
 
     @Test
-    fun returnNoCity2(){
-        coEvery { cache[any()] } answers { TestDataProviderProvider.provideDomainModelsFromBeginning() }
+    fun returnNoCityOnLonger(){
+        val data = TestDataProviderProvider
+            .sortDomainModels(TestDataProviderProvider.provideDomainModelsFromBeginning())
+                coEvery { cache[any()] } answers { data }
         val expected = Result.success(emptyList<City>())
         val actual = citySearcher.searchCity("Abbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
 
@@ -53,8 +71,9 @@ class CitySearcherShould : BaseTest() {
 
 
     @Test
-    fun returnOneCity1() {
-        val data = TestDataProviderProvider.provideDomainModelsFromBeginning()
+    fun returnOneCityOnExact() {
+        val data = TestDataProviderProvider
+            .sortDomainModels(TestDataProviderProvider.provideDomainModelsFromBeginning())
         coEvery { cache[any()] } answers { data }
 
         var actual = emptyList<City>()
@@ -71,8 +90,9 @@ class CitySearcherShould : BaseTest() {
 
 
     @Test
-    fun returnOneCity2() {
-        val data = TestDataProviderProvider.provideDomainModelsFromBeginning()
+    fun returnOneCityOnExact2() {
+        val data = TestDataProviderProvider
+            .sortDomainModels(TestDataProviderProvider.provideDomainModelsFromBeginning())
         coEvery { cache[any()] } answers { data }
 
         var actual = emptyList<City>()
@@ -91,8 +111,9 @@ class CitySearcherShould : BaseTest() {
 
 
     @Test
-    fun returnOneCity3(){
-        val data = TestDataProviderProvider.provideDomainModelFromEnding()
+    fun returnOneCityOnExactAndLong(){
+        val data = TestDataProviderProvider
+            .sortDomainModels(TestDataProviderProvider.provideDomainModelFromEnding())
         coEvery { cache[any()] } answers { data }
 
         var actual = emptyList<City>()
@@ -112,8 +133,9 @@ class CitySearcherShould : BaseTest() {
 
 
     @Test
-    fun returnManyCities1() {
-        val data = TestDataProviderProvider.sortDomainModels(TestDataProviderProvider.provideDomainModelsFromBeginning())
+    fun returnManyCitiesOnShort1() {
+        val data = TestDataProviderProvider
+            .sortDomainModels(TestDataProviderProvider.provideDomainModelsFromBeginning())
         coEvery { cache[any()] } answers { data }
 
         var actual = emptyList<City>()
@@ -126,8 +148,9 @@ class CitySearcherShould : BaseTest() {
     }
 
     @Test
-    fun returnManyCities2() {
-        val data = TestDataProviderProvider.sortDomainModels(TestDataProviderProvider.provideDomainModelsFromBeginning())
+    fun returnManyCitiesOnShort2() {
+        val data = TestDataProviderProvider
+            .sortDomainModels(TestDataProviderProvider.provideDomainModelsFromBeginning())
         coEvery { cache[any()] } answers { data }
 
         var actual = emptyList<City>()
@@ -141,8 +164,9 @@ class CitySearcherShould : BaseTest() {
 
 
     @Test
-    fun returnManyCities3() {
-        val data = TestDataProviderProvider.sortDomainModels(TestDataProviderProvider.provideDomainModelsFromBeginning())
+    fun returnManyCitiesOnShort3() {
+        val data = TestDataProviderProvider
+            .sortDomainModels(TestDataProviderProvider.provideDomainModelsFromBeginning())
         coEvery { cache[any()] } answers { data }
 
         var actual = emptyList<City>()
@@ -156,7 +180,7 @@ class CitySearcherShould : BaseTest() {
 
 
     @Test
-    fun returnManyCities4() {
+    fun returnManyCitiesOnShort4() {
         val data = TestDataProviderProvider.sortDomainModels(TestDataProviderProvider.provideDomainModelFromEnding())
 
         coEvery { cache[any()] } answers { data }
@@ -168,6 +192,17 @@ class CitySearcherShould : BaseTest() {
         Truth
             .assertThat(actual)
             .hasSize(10)
+    }
+
+    @Test
+    fun returnErrorOnNoData(){
+        coEvery { cache[any()] } throws NullPointerException()
+
+        val expectedErrorMessage = "Error: Cache Corrupted"
+
+        val actual = citySearcher.searchCity("###")
+
+        Truth.assertThat(isFailureWithMessage(actual, expectedErrorMessage)).isTrue()
     }
 
 }
