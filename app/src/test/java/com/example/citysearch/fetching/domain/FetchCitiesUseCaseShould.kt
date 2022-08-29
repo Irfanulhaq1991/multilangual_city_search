@@ -24,7 +24,7 @@ class FetchCitiesUseCaseShould : BaseTest() {
     @Before
     override fun setup() {
         super.setup()
-        domainModels = TestDataProviderProvider.provideDomainModels()
+        domainModels = TestDataProviderProvider.provideDomainModelsFromBeginning()
         fetchCitiesUseCase = FetchCitiesUseCase(citiesRepository)
     }
 

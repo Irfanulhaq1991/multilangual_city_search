@@ -23,8 +23,8 @@ abstract class ICitiesDataSourceContactTests : BaseTest() {
 
     @Test
     fun fetchOneCities() = runTest {
-        val remoteDataSource = withData(listOf(TestDataProviderProvider.provideDTOS()[0]))
-        val expected = listOf(TestDataProviderProvider.provideDTOS()[0])
+        val remoteDataSource = withData(listOf(TestDataProviderProvider.provideDOSFromBeginning()[0]))
+        val expected = listOf(TestDataProviderProvider.provideDOSFromBeginning()[0])
 
         val actual = remoteDataSource.fetchCities()
 
@@ -34,8 +34,8 @@ abstract class ICitiesDataSourceContactTests : BaseTest() {
 
     @Test
     fun fetchManyCities() = runTest {
-        val remoteDataSource = withData(TestDataProviderProvider.provideDTOS())
-        val expected = Result.success(TestDataProviderProvider.provideDTOS())
+        val remoteDataSource = withData(TestDataProviderProvider.provideDOSFromBeginning())
+        val expected = Result.success(TestDataProviderProvider.provideDOSFromBeginning())
 
         val actual = remoteDataSource.fetchCities()
 

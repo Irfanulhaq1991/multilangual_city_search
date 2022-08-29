@@ -41,8 +41,8 @@ class CityFetchingShould {
 
     @Before
     fun setup() {
-        dtoModels = TestDataProviderProvider.provideDTOS()
-        domainModels = TestDataProviderProvider.provideDomainModels()
+        dtoModels = TestDataProviderProvider.provideDOSFromBeginning()
+        domainModels = TestDataProviderProvider.provideDomainModelsFromBeginning()
         val fakeCitiesRemoteApi = AcceptanceTestJsonProvider(dtoModels)
         val dataSource = FileDataSource(fakeCitiesRemoteApi)
         val mapper = CityMapper()
@@ -83,13 +83,13 @@ class CityFetchingShould {
             CitiesUIState(
                 loading = false,
                 isUpdates = true,
-                cities = TestDataProviderProvider.sortDomainModels(domainModels)
+                cities = TestDataProviderProvider.sortDomainModels(domainModels).subList(34,101)
             )
         )
 
         uiController.fetchCities()
         uiController.clear()
-        uiController.searchCity(CITY_LIST_KEY)
+        uiController.searchCity("B")
         val actual = uiController.uiStates
 
         Truth.assertThat(actual).isEqualTo(expected)

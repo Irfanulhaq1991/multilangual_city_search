@@ -11,12 +11,22 @@ import java.util.*
 object TestDataProviderProvider : JsonDataProvider() {
 
 
-    fun provideDTOS(): List<CityDto> {
-        return deSerializeAllCitiesJson(getJsonCitiesFromAssets()).subList(0, 900)
+    fun provideDOSFromBeginning(): List<CityDto> {
+         return deSerializeAllCitiesJson(getJsonCitiesFromAssets()).subList(0,900)
     }
 
-    fun provideDomainModels(): List<City> {
-        return map(provideDTOS())
+    fun provideDTOSFromEnding(): List<CityDto> {
+        val data = deSerializeAllCitiesJson(getJsonCitiesFromAssets())
+        return data.subList(data.size-900,data.size)
+    }
+
+
+    fun provideDomainModelFromEnding(): List<City> {
+        return map(provideDTOSFromEnding())
+    }
+
+    fun provideDomainModelsFromBeginning(): List<City> {
+        return map(provideDOSFromBeginning())
     }
 
     // Map the dto to domain for testing

@@ -49,15 +49,21 @@ class CitySearcher(private val cache: IAppCache<String, List<City>>) {
     }
 
     private fun getRight(query: String, data: List<City>, rightIndex: Int, mainMiddle: Int): Int {
+
+
         var right = rightIndex
         var left = mainMiddle + 1
         var middle = (left + right) / 2
-        val i = query.length
+
         if (mainMiddle == data.size - 1) return right
-        else if (data[mainMiddle + 1].cityName.substring(0, i) > query) {
+
+        var i = boundIndex(data[mainMiddle + 1].cityName, query)
+
+        if (data[mainMiddle + 1].cityName.substring(0, i) > query) {
             return mainMiddle
         } else {
             while (left <= right) {
+                i = boundIndex(data[middle].cityName, query)
                 if (data[middle].cityName.substring(0, i) > query) {
                     right = middle - 1
                 } else
@@ -74,15 +80,20 @@ class CitySearcher(private val cache: IAppCache<String, List<City>>) {
         leftIndex: Int,
         mainMiddle: Int
     ): Int {
+
         var left = leftIndex
         var right = mainMiddle - 1
         var middle = (left + right) / 2
-        val i = query.length
+
         if (mainMiddle == 0) return left
-        else if (data[mainMiddle - 1].cityName.substring(0, i) < query) {
+
+        var i = boundIndex(data[mainMiddle - 1].cityName, query)
+
+        if (data[mainMiddle - 1].cityName.substring(0, i) < query) {
             return mainMiddle
         } else {
             while (left <= right) {
+                i = boundIndex(data[middle].cityName, query)
                 if (data[middle].cityName.substring(0, i) < query) {
                     left = middle + 1
                 } else
@@ -91,6 +102,11 @@ class CitySearcher(private val cache: IAppCache<String, List<City>>) {
             }
         }
         return left
+    }
+
+
+    private fun boundIndex(first: String, second: String): Int {
+        return if (first.length < second.length) first.length else second.length
     }
 
 }
