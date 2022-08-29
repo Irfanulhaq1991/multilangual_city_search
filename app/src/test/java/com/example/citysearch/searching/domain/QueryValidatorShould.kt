@@ -24,9 +24,36 @@ class QueryValidatorShould : BaseTest(){
     }
 
     @Test
-    fun validateValidInvalidQuery(){
+    fun validateInvalidQuery1(){
         Truth
             .assertThat(queryValidator.validate("!@@$"))
             .isFalse()
     }
+    @Test
+    fun validateInvalidQuery2(){
+        Truth
+            .assertThat(queryValidator.validate("!"))
+            .isFalse()
+    }
+    @Test
+    fun validateInvalidQuery3(){
+        Truth
+            .assertThat(queryValidator.validate("@"))
+            .isFalse()
+    }
+
+    @Test
+    fun validateInvalidQuery4(){
+        Truth
+            .assertThat(queryValidator.validate("%+"))
+            .isFalse()
+    }
+    @Test
+    fun validateInvalidQuery5(){
+        Truth
+            .assertThat(queryValidator.validate("Hello%+"))
+            .isFalse()
+    }
+
+
 }

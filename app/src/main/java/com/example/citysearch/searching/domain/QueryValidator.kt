@@ -6,6 +6,12 @@ class QueryValidator {
     fun validate(query: String):Boolean {
         if(query.contains("!@@$"))
             return false
+        else if(query.contains("!"))
+            return false
+        else if(query.contains("@"))
+            return false
+        else if(query.contains("%+"))
+            return false
         else
             return true
     }
