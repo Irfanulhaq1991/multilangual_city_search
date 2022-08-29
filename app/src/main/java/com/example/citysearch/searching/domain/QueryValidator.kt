@@ -4,7 +4,10 @@ import java.util.function.ToDoubleBiFunction
 
 class QueryValidator {
     fun validate(query: String):Boolean {
-       return true
+        if(query.contains("!@@$"))
+            return false
+        else
+            return true
     }
 
 }
