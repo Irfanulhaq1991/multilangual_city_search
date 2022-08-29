@@ -22,4 +22,11 @@ class QueryValidatorShould : BaseTest(){
             .assertThat(queryValidator.validate("Hello"))
             .isTrue()
     }
+
+    @Test
+    fun validateValidInvalidQuery(){
+        Truth
+            .assertThat(queryValidator.validate("!@@$"))
+            .isFalse()
+    }
 }

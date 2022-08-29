@@ -37,4 +37,10 @@ class SearchCityUseCaseShould : BaseTest() {
         searchCityUseCase("##")
         coVerify { queryValidator.validate(any()) }
     }
+
+
+
+
+
+
 }
