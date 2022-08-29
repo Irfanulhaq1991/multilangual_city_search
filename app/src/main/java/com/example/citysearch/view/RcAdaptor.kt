@@ -18,7 +18,7 @@ class RcAdaptor<T>(private val itemLayoutManger: ItemLayoutManger<T>) :
         if (!isUpdated) return
         this.itemList.clear()
         this.itemList.addAll(itemList)
-        notifyItemMoved(0, itemList.size - 1)
+        notifyItemRangeChanged(0, itemList.size - 1)
     }
 
     fun getItem(position: Int): T {

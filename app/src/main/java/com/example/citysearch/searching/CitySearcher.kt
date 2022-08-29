@@ -4,17 +4,16 @@ import com.example.citysearch.common.CITY_LIST_KEY
 import com.example.citysearch.fetching.domain.City
 import com.example.citysearch.fetching.domain.normalize
 import java.lang.NullPointerException
-import java.util.function.ToDoubleBiFunction
 
 
-class CitySearcher(private val cache: IAppCache<String, List<City>>) {
-    fun searchCity(query: String): Result<List<City>> {
+class CitySearcher(private val cache: IAppCache<String, List<City>>) : ICitySearcher {
+    override fun searchCity(query: String): Result<List<City>> {
         return try {
             val cachedData = cache[CITY_LIST_KEY]
             val result = doSearch(query, cachedData)
             Result.success(result)
         } catch (e: NullPointerException) {
-            Result.failure(Throwable("Error"))
+            Result.failure(Throwable("Error: Cache Corrupted"))
         }
     }
 
@@ -23,89 +22,91 @@ class CitySearcher(private val cache: IAppCache<String, List<City>>) {
         var left = 0
         var right = data.size - 1
         var middle = (left + right) / 2
-        var querLength = query.length
-        var i = querLength
-        val normalizedQuery = query.normalize()
+        val normalizedQuery = query.normalize().lowercase()
+        var i: Int
 
         while (left <= right) {
-            if (i > data[middle].cityName.length)
-                i = data[middle].cityName.length
-            if (data[middle].cityName.substring(0, i) == normalizedQuery) {
-                val leftIndex = getLeftIndex(query, data, left, middle)
-                val rightIndex = getRight(query, data, right, middle)
+            i = reduce(data[middle].cityName, query)
 
-                return data.subList(leftIndex, rightIndex + 1)
-            }
-            if (normalizedQuery > data[middle].cityName.substring(0, i)) {
+            if (data[middle].cityName.substring(0, i).lowercase() == normalizedQuery)
+                return getRangeOf(data, normalizedQuery, left, right, middle)
+
+
+            if (normalizedQuery > data[middle].cityName.substring(0, i).lowercase())
                 left = middle + 1
-
-            } else if (normalizedQuery < data[middle].cityName.substring(0, i)) {
+            else if (normalizedQuery < data[middle].cityName.substring(0, i).lowercase())
                 right = middle - 1
-            }
+
+
             middle = (left + right) / 2
-            i = normalizedQuery.length
         }
+
         return emptyList()
+    }
+
+
+    private fun getRangeOf(
+        data: List<City>,
+        query: String,
+        left: Int,
+        right: Int,
+        middle: Int
+    ): List<City> {
+
+        val leftBound = getLeft(query, data, left, middle)
+        val rightBound = getRight(query, data, right, middle)
+
+        return data.subList(leftBound, rightBound + 1)
     }
 
     private fun getRight(query: String, data: List<City>, rightIndex: Int, mainMiddle: Int): Int {
 
 
-        var right = rightIndex
-        var left = mainMiddle + 1
-        var middle = (left + right) / 2
+        var rightBound = rightIndex
+        var partialLeftBound = mainMiddle + 1
+        var middle = (partialLeftBound + rightBound) / 2
+        var i: Int
 
-        if (mainMiddle == data.size - 1) return right
+        while (partialLeftBound <= rightBound) {
+            i = reduce(data[middle].cityName, query)
 
-        var i = boundIndex(data[mainMiddle + 1].cityName, query)
+            if (data[middle].cityName.substring(0, i).lowercase() > query)
+                rightBound = middle - 1
+            else
+                partialLeftBound = middle + 1
 
-        if (data[mainMiddle + 1].cityName.substring(0, i) > query) {
-            return mainMiddle
-        } else {
-            while (left <= right) {
-                i = boundIndex(data[middle].cityName, query)
-                if (data[middle].cityName.substring(0, i) > query) {
-                    right = middle - 1
-                } else
-                    left = middle + 1
-                middle = (left + right) / 2
-            }
+            middle = (partialLeftBound + rightBound) / 2
         }
-        return right
+        return rightBound
     }
 
-    private fun getLeftIndex(
+    private fun getLeft(
         query: String,
         data: List<City>,
         leftIndex: Int,
         mainMiddle: Int
     ): Int {
 
-        var left = leftIndex
-        var right = mainMiddle - 1
-        var middle = (left + right) / 2
+        var leftBound = leftIndex
+        var partialRightBound = mainMiddle - 1
+        var middle = (leftBound + partialRightBound) / 2
+        var i: Int
 
-        if (mainMiddle == 0) return left
+        while (leftBound <= partialRightBound) {
+            i = reduce(data[middle].cityName, query)
 
-        var i = boundIndex(data[mainMiddle - 1].cityName, query)
+            if (data[middle].cityName.substring(0, i).lowercase() < query)
+                leftBound = middle + 1
+            else
+                partialRightBound = middle - 1
 
-        if (data[mainMiddle - 1].cityName.substring(0, i) < query) {
-            return mainMiddle
-        } else {
-            while (left <= right) {
-                i = boundIndex(data[middle].cityName, query)
-                if (data[middle].cityName.substring(0, i) < query) {
-                    left = middle + 1
-                } else
-                    right = middle - 1
-                middle = (left + right) / 2
-            }
+            middle = (leftBound + partialRightBound) / 2
         }
-        return left
+        return leftBound
     }
 
 
-    private fun boundIndex(first: String, second: String): Int {
+    private fun reduce(first: String, second: String): Int {
         return if (first.length < second.length) first.length else second.length
     }
 

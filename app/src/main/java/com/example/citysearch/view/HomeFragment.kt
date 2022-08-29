@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -14,6 +15,7 @@ import com.example.citysearch.R
 import com.example.citysearch.databinding.CityCellBinding
 import com.example.citysearch.databinding.FragmentHomeBinding
 import com.example.citysearch.fetching.domain.City
+import org.koin.android.ext.android.bind
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment(), Observer<CitiesUIState>, ItemLayoutManger<City> {
@@ -41,6 +43,9 @@ class HomeFragment : Fragment(), Observer<CitiesUIState>, ItemLayoutManger<City>
         super.onViewCreated(view, savedInstanceState)
         viewModel.citiesLiveData
             .observe(viewLifecycleOwner, this)
+        binding.searchView.doOnTextChanged { query, _, _, _ ->
+            viewModel.search(query.toString())
+        }
         adaptor
     }
 
@@ -68,7 +73,6 @@ class HomeFragment : Fragment(), Observer<CitiesUIState>, ItemLayoutManger<City>
         showErrorMessage(state.errorMessage)
         stateRendered(state)
     }
-
 
 
     private fun navigateToMap(view: View) {

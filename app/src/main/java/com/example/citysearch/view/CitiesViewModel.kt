@@ -19,33 +19,32 @@ class CitiesViewModel(
     // guarding the mutable live data available one for local mutation
     val citiesLiveData: LiveData<CitiesUIState> = _citiesLiveData
 
-    private var fetchJob: Job? = null
+    private var job: Job? = null
 
     // cancel nay request mad previously proceed with new request
     fun fetchCities() {
-        fetchJob?.cancel()
-        proceedFetchingCities()
+        job?.cancel()
+        job = proceedFetchingCities()
 
     }
 
 
     fun search(query: String) {
-        fetchJob = viewModelScope.launch {
+        job = viewModelScope.launch {
             searchCityUseCase(query).run { reduceState(this) }
         }
     }
 
+    // After ui is updated
     fun stateRendered() {
         _citiesLiveData.value = _citiesLiveData.value!!.copy(errorMessage = null,isUpdates = false)
     }
 
 
 
-
-
     // request for fetching cities
-    private fun proceedFetchingCities() {
-        fetchJob = viewModelScope.launch {
+    private fun proceedFetchingCities(): Job {
+        return viewModelScope.launch {
             _citiesLiveData.value = (_citiesLiveData.value ?: CitiesUIState()).copy(loading = true)
             fetchCitiesUseCase()
                 .run { reduceState(this) }
