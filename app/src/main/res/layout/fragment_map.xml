@@ -26,6 +26,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         android:padding="10dp"
+        android:tint="@color/black"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

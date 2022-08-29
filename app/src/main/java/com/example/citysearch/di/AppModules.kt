@@ -14,6 +14,7 @@ import com.example.citysearch.fetching.domain.mapper.IMapper
 import com.example.citysearch.view.CitiesViewModel
 import com.example.citysearch.searching.*
 import com.example.citysearch.searching.data.*
+import com.example.citysearch.searching.domain.QueryValidator
 import com.example.citysearch.searching.domain.SearchCityUseCase
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -32,7 +33,8 @@ val searchCityModule = module {
     single<IAppCache<String, List<City>>> { SimpleCache(1) }
     factory<ICitySearcher> { CitySearcher(get()) }
     factory { CitySearchRepository(get()) }
-    factory { SearchCityUseCase(get()) }
+    factory { QueryValidator() }
+    factory { SearchCityUseCase(get(), get()) }
 }
 
 val fetchCitiesModuleWithContext = module {
