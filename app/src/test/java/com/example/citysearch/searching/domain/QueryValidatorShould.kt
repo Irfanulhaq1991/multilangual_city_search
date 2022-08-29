@@ -55,5 +55,18 @@ class QueryValidatorShould : BaseTest(){
             .isFalse()
     }
 
+    @Test
+    fun validateInvalidQuery6(){
+        Truth
+            .assertThat(queryValidator.validate(" "))
+            .isFalse()
+    }
+
+    @Test
+    fun validateInvalidQuery7(){
+        Truth
+            .assertThat(queryValidator.validate("  "))
+            .isFalse()
+    }
 
 }
