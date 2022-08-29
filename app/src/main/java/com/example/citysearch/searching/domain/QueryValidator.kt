@@ -4,7 +4,7 @@ import java.util.function.ToDoubleBiFunction
 
 class QueryValidator {
     fun validate(query: String):Boolean {
-        TODO("Not implemented")
+       return true
     }
 
 }
