@@ -1,6 +1,3 @@
-# Mobile assignment RnD
- The Assignment is completed.
-
 ### Details & Description
  - Architecture : MVVM with Unidirectional data flow. It could be called MVI too.
  - State Retaining: Android ViewModel
