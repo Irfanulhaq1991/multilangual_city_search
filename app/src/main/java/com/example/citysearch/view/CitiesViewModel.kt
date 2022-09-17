@@ -16,7 +16,7 @@ class CitiesViewModel(
 ) : ViewModel() {
     private val _citiesLiveData = MutableLiveData<CitiesUIState>()
 
-    /** guarding the mutable live data available one for local mutation*/
+    /** guarding the mutable live data available only for local mutation*/
     val citiesLiveData: LiveData<CitiesUIState> = _citiesLiveData
 
     private var job: Job? = null
@@ -25,7 +25,6 @@ class CitiesViewModel(
     fun fetchCities() {
         job?.cancel()
         job = proceedFetchingCities()
-
     }
 
 

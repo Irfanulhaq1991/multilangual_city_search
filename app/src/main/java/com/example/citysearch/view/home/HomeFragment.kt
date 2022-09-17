@@ -44,12 +44,17 @@ class HomeFragment : Fragment(), Observer<CitiesUIState>, ItemLayoutManger<City>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.citiesLiveData.apply { adaptor }
+        viewModel
+            .citiesLiveData
+            .apply { adaptor }
             .observe(viewLifecycleOwner, this)
 
-        binding.searchView.doOnTextChanged { query, _, _, _ ->
-            viewModel.search(query.toString())
-        }
+        binding
+            .searchView
+            .doOnTextChanged { query, _, _, _ ->
+                viewModel
+                    .search(query.toString())
+            }
     }
 
 
@@ -73,6 +78,7 @@ class HomeFragment : Fragment(), Observer<CitiesUIState>, ItemLayoutManger<City>
 
         binding.progressbar.visibility = if (state.loading) View.VISIBLE else View.GONE
         binding.searchView.visibility = if (state.loading) View.GONE else View.VISIBLE
+
         adaptor.update(state.cities, state.isUpdates)
         showErrorMessage(state.errorMessage)
         stateRendered(state)
@@ -90,7 +96,6 @@ class HomeFragment : Fragment(), Observer<CitiesUIState>, ItemLayoutManger<City>
         message?.let {
             Snackbar.make(requireContext(), binding.root, it, Snackbar.LENGTH_SHORT).show()
         }
-
     }
 
     private fun stateRendered(state: CitiesUIState) {

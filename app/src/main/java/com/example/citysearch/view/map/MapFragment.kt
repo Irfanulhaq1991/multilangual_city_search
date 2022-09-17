@@ -45,10 +45,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-
-
-        with(googleMap) {
+    override fun onMapReady(googleMap: GoogleMap) = with(googleMap) {
             // Add a marker in Sydney and move the camera
             addMarker(
                 MarkerOptions()
@@ -56,7 +53,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     .title(cityName)
             )
             moveCamera(CameraUpdateFactory.newLatLng(position))
-        }
     }
 
 
